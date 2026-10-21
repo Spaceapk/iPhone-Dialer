@@ -1,6 +1,6 @@
 # Informe de validación · 1.0.0-alpha02
 
-Estado: candidato de código fuente, no APK entregada ni corrección confirmada en dispositivo.
+Estado: alfa release firmada tras autorización. No se confirma corrección en dispositivo físico.
 
 ## Ejecución actual
 - `:app:testDebugUnitTest :app:lintDebug`: BUILD SUCCESSFUL. El código Kotlin de la variante debug y sus pruebas compilan.
@@ -26,3 +26,13 @@ Contraste calculado de cuatro pares: azul0062CC/blanco 5,80:1; secundario636366/
 No se ha instalado alpha02 en el HOT 40i Android 13. No se han probado esta revisión con llamadas reales entrantes/salientes, pantalla bloqueada, Bluetooth, doble SIM, reinicio ni variaciones del fabricante. No hay Logcat del cierre original. El defecto concreto corregido es compatible con el síntoma, pero no se afirma que sea su única causa.
 
 Los resultados anteriores de alpha01 están archivados en `history/alpha01/` y no se atribuyen a esta revisión.
+
+## Compilación firmada posterior a la autorización
+- `testDebugUnitTest lintRelease assembleRelease bundleRelease`: BUILD SUCCESSFUL. Las 30 pruebas JVM vuelven a pasar (pueden reutilizar resultados de Gradle cuando no hay cambios de código).
+- Release Lint: {'Warning': 17}; sin errores fatales. Advertencias no ocultadas.
+- APK release R8 y AAB construidos. Firmas verificadas, mismo certificado permanente público (SIGNING.md). Paquete y versiones leídos directamente de APK.
+- Respaldo AES-256: extracción probada y almacén restaurado abierto correctamente. No equivale a confirmar que el usuario descargó su copia.
+- `adb devices`: ningún dispositivo conectado. No se ha instalado o probado este binario R8 en teléfono/emulador. Robolectric prueba código sin R8; no demuestra ejecución del binario optimizado.
+- No se ejecutaron pruebas instrumentadas nuevas ni pruebas de operador. No se volvió a entregar el APK alpha01 renombrado.
+
+Se conserva `evidence/alpha02-r8-mapping.txt.gz` para interpretar informes de excepciones del binario R8 entregado. No reutilizar este mapa para otras compilaciones.

@@ -1,24 +1,17 @@
-# Entrega · 1.0.0-alpha02 · candidato
+# Entrega autorizada · 1.0.0-alpha02
 
-## Incluido
-- Proyecto editable Kotlin/Compose y documentación actualizada.
-- Historial Git recuperable mediante `repository.git.bundle` dentro del ZIP.
-- Corrección del contrato de notificación de Android 13 y diagnóstico local voluntario.
-- Interfaz opaca de inspiración iOS clásica, sin Liquid Glass.
-- XML de 30 pruebas JVM satisfactorias, Lint y dos renderizados de interfaz.
-- Identificador actual: `com.pablormlopez.iphonedialer`; versionCode 2.
+## Artefactos
+- APK Android instalable, variante release optimizada R8, firmada con la identidad permanente nueva autorizada.
+- AAB firmado, para distribución posterior: no se instala directamente y no implica aprobación de ninguna tienda.
+- Código fuente editable Kotlin/Compose, documentación, XML de pruebas, Lint, renderizados y Git bundle recuperable.
+- Respaldo privado 7z/AES-256 y recuperación confidencial entregados por separado, fuera del código. Extracción y apertura del almacén restaurado comprobadas. Custodia final pendiente de descarga por el usuario; no hay respaldo externo automático.
+- Identificador de esta línea: com.pablormlopez.iphonedialer; versionName 1.0.0-alpha02; versionCode 2. No es 1.0.0 estable ni cumplimiento completo del prompt maestro.
 
-## No incluido
-No se entrega una nueva APK ni AAB. La clave privada de firma de alpha01 no está disponible en este entorno. No se creó otra ni se reutilizó la antigua APK bajo un nombre nuevo. Esta entrega no es la versión 1.0.0 de producción completa.
+## Transición
+La primera alfa tenía otro paquete .debug y otra firma no disponible. La nueva instalación tiene identidad permanente autorizada y puede coexistir, pero no actualiza automáticamente sus preferencias. Ver INSTALLATION.md para evitar confundir las dos.
 
-## Firma y transición
-Android exige la identidad de firma original para actualizar sobre la instalación existente. El certificado de una APK no permite reconstruir su clave privada.
+## Validación
+Compilación release y 30 pruebas JVM satisfactorias, firmas APK/AAB verificadas y certificados coincidentes. Release Lint sin errores fatales; advertencias en TEST_REPORT. No hay dispositivo conectado y no se probó el binario optimizado en el HOT 40i, por lo que no se garantiza resuelto el cierre. Ver TEST_REPORT, ALPHA02_FIX y LIMITATIONS.
 
-Si no se recupera esa clave, se necesita autorización para una nueva instalación con identidad de firma permanente. Antes de producirla debe acordarse custodia segura, respaldo y futura reutilización; nunca guardar claves o contraseñas en Git ni enviarlas en texto plano. Una instalación con otro identificador o la desinstalación de la alfa requieren decisión explícita. La desinstalación elimina preferencias locales, aunque no elimina por sí misma contactos o historial del proveedor del sistema.
-
-Para empaquetado de evaluación se requieren las variables de una clave EXISTENTE indicadas en README; la validación evita crear automáticamente la clave debug estándar. Para distribución se usa la configuración de firma release existente con secretos de CI. No se han publicado repositorios remotos, configurado cuentas Codemagic ni subido respaldos a Drive.
-
-## Siguiente validación
-Con una APK firmada y autorizada: comprobar llamada saliente, entrante, respuesta, finalización y notificación en HOT 40i Android 13. Si persiste el cierre, compartir voluntariamente el informe técnico desde Configuración; alpha01 no tenía esa función. Ver TEST_REPORT y LIMITATIONS para el resto del alcance.
-
-Mientras no se confirme estabilidad, utilizar el marcador original del teléfono para llamadas importantes.
+## Actualizaciones
+Reutilizar la MISMA clave y paquete; incrementar versionCode. Ver SIGNING.md. No se publicaron repositorios remotos ni se configuraron cuentas Codemagic/GitLab/Drive. Los archivos CI son configuración pendiente, no pipelines remotos verificados.

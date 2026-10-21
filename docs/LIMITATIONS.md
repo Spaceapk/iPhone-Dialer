@@ -25,10 +25,10 @@ Esta entrega es alfa. No debe anunciarse como producto completo, estable ni veri
 - Política de Google Play (historial, rol, fullscreen, nombre/marcas), avisos de uso/coste, firma permanente y plan de recuperación.
 
 ## Entrega externa pendiente
-No hay repositorio remoto publicado, pipeline remoto ejecutado, cuenta de Codemagic conectada, respaldo de Drive ni clave de producción. Los archivos locales de CI y Git no prueban que esos servicios estén funcionando. El APK debug sirve para evaluación; el identificador propuesto y la firma de producción deben confirmarse antes del primer lanzamiento estable.
+No hay repositorio remoto publicado, pipeline remoto ejecutado, cuenta de Codemagic conectada ni respaldo de Drive. Alpha02 ya tiene una identidad permanente autorizada; su respaldo privado debe custodiarlo el usuario. Los archivos locales de CI y Git no prueban que esos servicios estén funcionando. El APK debug sirve para evaluación; el identificador propuesto y la firma de producción deben confirmarse antes del primer lanzamiento estable.
 
-## Revisión final de evaluación
+## Revisión histórica de evaluación alpha01
 La inspección visual manual completa de la compilación final no pudo completarse por bloqueos recurrentes de System UI del emulador. La regresión instrumentada de disposición sí aprobó; no equivale a una aprobación visual integral. El APK debug incluye dependencias de desarrollo y no está optimizado en tamaño/rendimiento como una release con R8. No usar esta alfa como marcador principal de un dispositivo crítico.
 
 ## Alpha02 y HOT 40i Android 13
-La causa exacta del cierre del dispositivo no está confirmada con un registro de ese teléfono. Se corrigió un defecto verificable del constructor de notificaciones salientes frente al contrato de Android 13. La corrección requiere validación física antes de declararla resuelta. La firma de la alpha01 no está disponible; no hay actualización binaria alpha02.
+La causa exacta del cierre del dispositivo no está confirmada con un registro de ese teléfono. Se corrigió un defecto verificable del constructor de notificaciones salientes frente al contrato de Android 13. La corrección requiere validación física antes de declararla resuelta. La firma de alpha01 no está disponible. Alpha02 se entrega como instalación nueva release, con otra identidad permanente autorizada; no es actualización compatible con alpha01.debug. El dispositivo físico sigue sin validar.

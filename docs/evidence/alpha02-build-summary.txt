@@ -1,0 +1,5 @@
+BUILD SUCCESSFUL: testDebugUnitTest lintRelease assembleRelease bundleRelease
+30 JVM tests; no hardware connected.
+Release lint: {'Warning': 17}
+APK/AAB signatures verified; same public SHA256 certificate.
+Encrypted signing backup recovery/extraction tested.

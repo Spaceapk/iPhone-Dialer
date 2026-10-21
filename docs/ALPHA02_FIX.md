@@ -33,3 +33,6 @@ Se retiró Liquid Glass, el gradiente y la preferencia de paneles translúcidos.
 No está disponible la clave privada de la APK alpha01. Su certificado público no permite reconstruirla. Por tanto, no se entrega una APK alpha02 firmada con otra clave como si fuera una actualización compatible.
 
 Antes de crear una nueva identidad permanente se requiere acordar su custodia y la transición. Instalar una aplicación con otro identificador o desinstalar la alfa son decisiones del usuario; no se realizan automáticamente. Desinstalar pierde preferencias/teclas rápidas locales, no elimina por sí mismo la agenda ni el historial del sistema. Las claves nunca deben entrar en Git.
+
+## Autorización y entrega posterior
+El usuario autorizó la instalación nueva. Se creó una identidad permanente distinta y se compiló la variante release `com.pablormlopez.iphonedialer`, separada de alpha01.debug. APK y AAB firmados verificados; respaldo cifrado y recuperación privada entregados aparte. El bloqueo descrito arriba corresponde al estado anterior a esta autorización. Ver SIGNING.md. La validación física sigue pendiente.

@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): false
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=iPhone Dialer, OU=Android Application Signing
+Signer #1 certificate SHA-256 digest: 2fdf5f434cdb0fd0882c24b11ae72e61011888a8d3cd9157faf94336c01ea926
+Signer #1 certificate SHA-1 digest: 6009d2038b6059ffb8cfd67e50b80599bb2ca111
+Signer #1 certificate MD5 digest: ddd78ef99249872532099b0b568f87ab
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 3072
+Signer #1 public key SHA-256 digest: c9cfddf29e8104a1b1b2976bca97f7d9a3f190c5fe921cbacb4f62a19d145c88
+Signer #1 public key SHA-1 digest: 70730b0cfc84f38e9edee028547b51967a0c7bd7
+Signer #1 public key MD5 digest: a8968522b62b4b0612e4c7857be7f20f

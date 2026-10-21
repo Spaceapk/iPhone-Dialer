@@ -1,11 +1,11 @@
 # iPhone Dialer · Android
 
-**Estado: alpha02, corrección candidata y rediseño clásico; no validada en el HOT 40i y sin APK nueva firmada.** Aplicación Kotlin/Compose nativa: no WebView, datos ficticios ni simulación de llamadas. Las acciones de llamada utilizan Android Telecom y los contactos/historial provienen de los proveedores del dispositivo. Que una ruta esté implementada no significa que se haya validado en hardware real.
+**Estado: alpha02, corrección candidata y rediseño clásico; no validada en el HOT 40i y con APK release firmada tras autorización. Sigue pendiente validar llamadas en el teléfono.** Aplicación Kotlin/Compose nativa: no WebView, datos ficticios ni simulación de llamadas. Las acciones de llamada utilizan Android Telecom y los contactos/historial provienen de los proveedores del dispositivo. Que una ruta esté implementada no significa que se haya validado en hardware real.
 
 ## Identidad
-- Identificador propuesto para producción: `com.pablormlopez.iphonedialer` (confirmar antes de publicar).
-- APK de evaluación: `com.pablormlopez.iphonedialer.debug`.
-- Versión actual: `1.0.0-alpha02` (el APK añade `-debug`).
+- Identificador de esta nueva instalación: `com.pablormlopez.iphonedialer`.
+- Alfa anterior/debug: `com.pablormlopez.iphonedialer.debug`; es otra instalación.
+- Versión entregada: `1.0.0-alpha02`, versionCode 2, variante release (no equivale a versión estable).
 - Android 10/API 29 o posterior, compile/target SDK 36, Java 17.
 - Recursos originales; no afiliada a Apple. Revisar el nombre comercial y las marcas antes de distribuir.
 
@@ -39,17 +39,17 @@
 
 La compilación JVM y Lint no requieren una firma. Empaquetar una APK debug queda bloqueado si no se proporciona una identidad de evaluación **existente**; no se crea otra clave en silencio. Variables: `ANDROID_EVALUATION_KEYSTORE_PATH`, `ANDROID_EVALUATION_KEYSTORE_PASSWORD`, `ANDROID_EVALUATION_KEY_ALIAS`, `ANDROID_EVALUATION_KEY_PASSWORD`. La clave de la alpha01 no está en la entrega ni en este entorno y no se puede reconstruir desde su APK. Una clave nueva no permite actualizar la alpha01 instalada.
 
-Producción sigue usando las variables `ANDROID_KEYSTORE_*` del apartado de firma. Hasta definir una identidad permanente y su custodia, esta revisión se entrega como fuentes, no como APK instalable.
+Producción sigue usando las variables `ANDROID_KEYSTORE_*` del apartado de firma. La identidad permanente ya se creó con autorización y se entrega respaldo cifrado separado. Ver `docs/SIGNING.md`; custodiar los archivos antes de futuras actualizaciones.
 
 ## Estado de instalación y seguridad
-No se ha entregado una APK alpha02. No reutilizar ni renombrar la APK alpha01 como si contuviera esta corrección. La nueva instalación requiere resolver primero la firma.
+Se entrega una APK alpha02 release firmada, verificada y optimizada. Es una instalación nueva, no actualización sobre alpha01.debug. Ver `docs/INSTALLATION.md`. No reutilizar ni renombrar la APK alpha01 como si contuviera esta corrección.
 
 Si la alpha01 se cierra al llamar, vuelve temporalmente al marcador original desde Ajustes de Android → Aplicaciones predeterminadas → Teléfono (los nombres pueden variar según el fabricante). No dependas de la alfa para llamadas importantes ni pruebes números de emergencia.
 
 ## Firma y futuras actualizaciones
 La APK alpha01 usó una identidad de desarrollo que no está disponible en esta revisión; **no** era una entrega firmada para producción. No se incluye esa clave privada ni se garantiza actualizar este APK desde otro entorno. Para instalar con una identidad distinta, será necesario instalar otro identificador o desinstalar la alfa (se perderán sus preferencias/teclas rápidas, no la agenda del sistema).
 
-Para producción se debe aprovisionar **una sola clave permanente**, mantenerla fuera del repositorio y custodiar dos copias cifradas con recuperación probada. No generar otra para cada versión. Variables protegidas requeridas: `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Usar un gestor de secretos/variables de archivo; no escribir contraseñas en comandos registrados, README ni Git.
+Ya se aprovisionó **una sola clave permanente** con autorización. Se probó recuperar el respaldo; el usuario debe descargarlo y custodiar dos copias seguras fuera del repositorio. No generar otra para cada versión. Variables protegidas requeridas: `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Usar un gestor de secretos/variables de archivo; no escribir contraseñas en comandos registrados, README ni Git.
 
 ```sh
 bash scripts/require-signing.sh
@@ -61,7 +61,7 @@ bash scripts/require-signing.sh
 ## GitLab / Codemagic / respaldos
 Los archivos `.gitlab-ci.yml` y `codemagic.yaml` están preparados, **no ejecutados en esas plataformas**. Configurar runners, repositorio remoto y credenciales con el propietario. En Codemagic registrar la referencia de firma `iphonedialer_release`. No hay conexión a GitLab, Codemagic ni Google Drive en esta entrega. No se ha subido nada a esos servicios.
 
-Antes de lanzar 1.0.0: completar pendientes, probar dispositivos/OEM, pasar lint/test y revisar política de permisos de Google Play, aviso de privacidad, accesibilidad, marca y seguridad. Conservar artefactos en CI y copiar código/documentación a Drive solo mediante una conexión autorizada. Las claves requieren un respaldo cifrado separado, no el ZIP de fuentes.
+Antes de lanzar 1.0.0: completar pendientes, probar dispositivos/OEM, pasar lint/test y revisar política de permisos de Google Play, aviso de privacidad, accesibilidad, marca y seguridad. Conservar artefactos en CI y copiar código/documentación a Drive solo mediante una conexión autorizada. Las claves requieren el respaldo cifrado separado entregado, no el ZIP de fuentes. Los jobs debug requieren las variables ANDROID_EVALUATION_* de una identidad existente; sin ellas fallan deliberadamente, no generan otra clave.
 
 ## Restaurar el repositorio local incluido
 El paquete de entrega contiene un `repository.git.bundle` con la rama `main` y su historial local. Para restaurarlo en otra carpeta:
