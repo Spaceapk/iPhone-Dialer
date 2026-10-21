@@ -11,3 +11,6 @@ Se pueden revocar permisos o cambiar de app de teléfono desde Ajustes de Androi
 No se graban ni transcriben llamadas. No hay identificación remota de desconocidos. El bloqueo se delega al proveedor autorizado de Android.
 
 Antes de publicación: el titular debe añadir identidad legal, canal de contacto, jurisdicción, fecha de vigencia y revisión de distribución. Este borrador no es un aviso legal definitivo.
+
+## Diagnóstico local en alpha02
+Puede guardarse un último informe de error en el almacenamiento privado de la aplicación. Contiene versión, API, fabricante/modelo, categoría técnica constante y clases/métodos/líneas de la excepción; se omiten sus mensajes y los números/nombres de llamadas. Es acotado y sustituye al informe anterior. No se envía automáticamente. El usuario puede compartirlo mediante el selector de Android o borrarlo desde Configuración. No es una garantía de detectar cierres del sistema, ANR o fallos nativos.

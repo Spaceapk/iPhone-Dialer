@@ -31,7 +31,7 @@ import javax.inject.Inject
     @Inject lateinit var store: CallStore
     @Inject lateinit var preferences: SettingsStore
     private var showDialpad by mutableStateOf(false)
-    override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState);enableEdgeToEdge();handle(intent);setContent { val prefs by preferences.flow.collectAsStateWithLifecycle(Preferences());DialerTheme(prefs) { InCallScreen(store,showDialpad,{showDialpad=it},{finish()}) } } }
+    override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState);enableEdgeToEdge();handle(intent);setContent { val prefs by preferences.flow.collectAsStateWithLifecycle(Preferences());DialerTheme(prefs.copy(theme="dark")) { InCallScreen(store,showDialpad,{showDialpad=it},{finish()}) } } }
     override fun onNewIntent(intent: Intent) { super.onNewIntent(intent);setIntent(intent);handle(intent) }
     private fun handle(intent: Intent) { if(intent.getBooleanExtra("dialpad",false)) showDialpad=true;if(intent.getStringExtra("call_action")=="answer") { intent.getStringExtra("call_id")?.let { store.answer(it) };intent.removeExtra("call_action") } }
 }

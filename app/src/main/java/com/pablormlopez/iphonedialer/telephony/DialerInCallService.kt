@@ -3,15 +3,13 @@ import android.app.*
 import android.content.*
 import android.os.*
 import android.telecom.*
-import androidx.core.app.NotificationCompat
-import androidx.core.app.Person
-import com.pablormlopez.iphonedialer.R
 import com.pablormlopez.iphonedialer.ui.InCallActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.UUID
 import javax.inject.Inject
 @AndroidEntryPoint class DialerInCallService: InCallService() {
     @Inject lateinit var store: CallStore
+    @Inject lateinit var notificationFactory: CallNotificationFactory
     private val callbacks=mutableMapOf<Call, Call.Callback>()
     private val notificationIds=mutableMapOf<Call,Int>()
     private var nextId=100
@@ -46,25 +44,24 @@ import javax.inject.Inject
         store.calls.entries.removeAll { it.value==call };updateAll();super.onCallRemoved(call)
     }
     private fun updateAll() { store.refresh();store.calls.forEach { (id,call) -> notifyCall(id,call) } }
-    private fun screenIntent(id: String, action: String?=null): PendingIntent {
-        val intent=Intent(this,InCallActivity::class.java).setAction("call:$id:${action.orEmpty()}").putExtra("call_id",id).putExtra("call_action",action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        return PendingIntent.getActivity(this, id.hashCode() xor (action?.hashCode() ?: 0), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-    }
-    private fun actionIntent(id: String, action: String)=PendingIntent.getBroadcast(this,(id+action).hashCode(),Intent(this,CallActionReceiver::class.java).setAction(action).putExtra("call_id",id),PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     private fun notifyCall(id: String, call: Call) {
-        val notificationId=notificationIds[call] ?: return
-        if(call.parent!=null || call.state==Call.STATE_DISCONNECTED) { notifications.cancel(notificationId);return }
-        val ringing=call.state==Call.STATE_RINGING
-        val live=store.state.value.calls.find { it.id==id } ?: return
-        val person=Person.Builder().setName(live.name).setImportant(true).build()
-        val style=if(ringing) NotificationCompat.CallStyle.forIncomingCall(person,actionIntent(id,"reject"),screenIntent(id,"answer")) else NotificationCompat.CallStyle.forOngoingCall(person,actionIntent(id,"end"))
-        val builder=NotificationCompat.Builder(this,if(ringing) "incoming" else "ongoing")
-            .setSmallIcon(R.drawable.ic_call).setContentTitle(live.name).setContentText(if(ringing) "Llamada entrante" else "Llamada en curso")
-            .setCategory(NotificationCompat.CATEGORY_CALL).setOngoing(true).setOnlyAlertOnce(true).setContentIntent(screenIntent(id))
-            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE).setStyle(style)
-        if(ringing && (Build.VERSION.SDK_INT<34 || notifications.canUseFullScreenIntent())) builder.setFullScreenIntent(screenIntent(id),true)
-        if(live.connectedAt>0) builder.setWhen(live.connectedAt).setUsesChronometer(true)
-        try { notifications.notify(notificationId,builder.build()) } catch(e: SecurityException) { store.error("Permite las notificaciones para mostrar las llamadas entrantes.") }
+        val notificationId = notificationIds[call] ?: return
+        if (call.parent != null || call.state == Call.STATE_DISCONNECTED) {
+            notifications.cancel(notificationId)
+            return
+        }
+        val live = store.state.value.calls.find { it.id == id } ?: return
+        try {
+            val fullScreen = call.state == Call.STATE_RINGING &&
+                (Build.VERSION.SDK_INT < 34 || notifications.canUseFullScreenIntent())
+            notifications.notify(notificationId, notificationFactory.build(live, fullScreen))
+        } catch (e: SecurityException) {
+            com.pablormlopez.iphonedialer.diagnostics.AppDiagnostics.record(this, "notification.permission", e)
+            store.error("Permite las notificaciones para mostrar las llamadas entrantes.")
+        } catch (e: IllegalArgumentException) {
+            com.pablormlopez.iphonedialer.diagnostics.AppDiagnostics.record(this, "notification.rejected", e)
+            store.error("Android rechazó el aviso de llamada. Hay un informe técnico local en Configuración.")
+        }
     }
     private fun openUi(dialpad: Boolean) { try { startActivity(Intent(this,InCallActivity::class.java).putExtra("dialpad",dialpad).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)) } catch(e: RuntimeException) { store.error("Abre la llamada desde su notificación.") } }
     override fun onBringToForeground(showDialpad: Boolean) { openUi(showDialpad) }

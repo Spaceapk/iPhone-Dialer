@@ -9,7 +9,7 @@ Esta entrega es alfa. No debe anunciarse como producto completo, estable ni veri
 - Duplicados: candidatos por coincidencia exacta de dígitos, sin normalización regional E.164 ni fusión propia; no se combinan contactos automáticamente. No hay buscador por cuentas ni una pantalla propia de todas las direcciones/correos; se utiliza el editor de contactos de Android.
 - No se implementan tonos por contacto desde esta UI. El proveedor puede conservar los configurados externamente; su reproducción depende del sistema/OEM.
 - No hay reordenación personalizada de favoritos, preferencias persistentes de SIM propia, color dinámico Material You ni opciones adicionales de diseño de fichas. Se respetan las preferencias SIM del sistema; con permiso se muestra un selector por llamada.
-- No hay un efecto de desenfoque/refracción Liquid Glass real: transparencia y superficies superpuestas nativas, degradadas a opacas si se pide.
+- La revisión alpha02 retira Liquid Glass a solicitud del usuario: todas las superficies de la app son sólidas.
 - Interfaz de audio: no se proporciona video, RTT, respuestas de rechazo por SMS, continuidad con Android Auto/Wear ni interfaces especiales para llamadas gestionadas por otras apps. Debe ampliarse y probarse antes de afirmar soporte completo de ROLE_DIALER en todos los escenarios.
 - No hay notificación propia de llamadas perdidas, proximitad/apagado automático de pantalla ni gestión de todas las interacciones con bloqueo de pantalla y llamadas simultáneas. La lista de llamadas y notificaciones se limpia al terminar; esto no sustituye un manejo completo de fallos del proceso.
 - Recientes agrupa por número, tipo y día según formato local; la caché en memoria lee la agenda/historial completos. Grandes volúmenes requieren Paging, normalización y pruebas de memoria antes de producción.
@@ -29,3 +29,6 @@ No hay repositorio remoto publicado, pipeline remoto ejecutado, cuenta de Codema
 
 ## Revisión final de evaluación
 La inspección visual manual completa de la compilación final no pudo completarse por bloqueos recurrentes de System UI del emulador. La regresión instrumentada de disposición sí aprobó; no equivale a una aprobación visual integral. El APK debug incluye dependencias de desarrollo y no está optimizado en tamaño/rendimiento como una release con R8. No usar esta alfa como marcador principal de un dispositivo crítico.
+
+## Alpha02 y HOT 40i Android 13
+La causa exacta del cierre del dispositivo no está confirmada con un registro de ese teléfono. Se corrigió un defecto verificable del constructor de notificaciones salientes frente al contrato de Android 13. La corrección requiere validación física antes de declararla resuelta. La firma de la alpha01 no está disponible; no hay actualización binaria alpha02.

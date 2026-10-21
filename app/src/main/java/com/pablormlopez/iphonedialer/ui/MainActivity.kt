@@ -30,7 +30,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.font.FontWeight
@@ -88,16 +88,16 @@ private data class PermissionPrompt(val permission: String,val reason: String,va
     val icons=listOf(Icons.Default.Star,Icons.Default.History,Icons.Default.Contacts,Icons.Default.Dialpad,Icons.Default.Voicemail)
     val filtered=remember(contacts,query) { contacts.filter { Search.matches(it.name,it.phones,query) } }
     Scaffold(containerColor=MaterialTheme.colorScheme.background,snackbarHost={SnackbarHost(snackbar)},bottomBar={
-        NavigationBar(containerColor=MaterialTheme.colorScheme.surface.copy(alpha=.94f)) { names.forEachIndexed { i,label -> NavigationBarItem(selected=tab==i,onClick={tab=i;query=""},icon={Icon(icons[i],contentDescription=null)},label={Text(label,fontSize=12.sp,maxLines=1)}) } }
+        NavigationBar(containerColor=MaterialTheme.colorScheme.surface,tonalElevation=0.dp,modifier=Modifier.height(72.dp)) { names.forEachIndexed { i,label -> NavigationBarItem(selected=tab==i,onClick={tab=i;query=""},icon={Icon(icons[i],contentDescription=null)},label={Text(label,fontSize=12.sp,maxLines=1)},colors=NavigationBarItemDefaults.colors(indicatorColor=Color.Transparent,selectedIconColor=MaterialTheme.colorScheme.primary,selectedTextColor=MaterialTheme.colorScheme.primary,unselectedIconColor=MaterialTheme.colorScheme.onSurfaceVariant,unselectedTextColor=MaterialTheme.colorScheme.onSurfaceVariant)) } }
     }) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding).background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primary.copy(alpha=.075f),MaterialTheme.colorScheme.background)))) {
+        Box(Modifier.fillMaxSize().padding(padding).background(MaterialTheme.colorScheme.background)) {
             Column(Modifier.widthIn(max=760.dp).fillMaxWidth().align(Alignment.TopCenter).padding(horizontal=20.dp)) {
                 Row(Modifier.fillMaxWidth().padding(top=20.dp,bottom=16.dp),verticalAlignment=Alignment.CenterVertically) {
                     Text(names.getOrElse(tab){"Teléfono"},fontSize=34.sp,fontWeight=FontWeight.Bold,modifier=Modifier.weight(1f))
                     if(tab==2) IconButton(onClick={safeIntent(Intent(Intent.ACTION_INSERT,CC.Contacts.CONTENT_URI))}) { Icon(Icons.Default.Add,"Crear contacto") }
                     IconButton(onClick={settings=true}) { Icon(Icons.Default.Settings,"Configuración") }
                 }
-                if(!roleHeld) { GlassPanel(prefs.glass,Modifier.fillMaxWidth().padding(bottom=16.dp)) { Text("Tu teléfono, a tu manera",style=MaterialTheme.typography.titleMedium);Text("Activa el marcador predeterminado para gestionar llamadas reales.");Button(onClick=::requestRole) { Text("Usar como teléfono") } } }
+                if(!roleHeld) { GroupedPanel(Modifier.fillMaxWidth().padding(bottom=16.dp)) { Text("Tu teléfono, a tu manera",style=MaterialTheme.typography.titleMedium);Text("Activa el marcador predeterminado para gestionar llamadas reales.");Button(onClick=::requestRole) { Text("Usar como teléfono") } } }
                 val content: @Composable (Int)->Unit = { current ->
                     Column(Modifier.fillMaxSize()) {
                     when(current) {
@@ -159,14 +159,14 @@ private data class PermissionPrompt(val permission: String,val reason: String,va
                 }
                 val rows=listOf(listOf("1" to "", "2" to "ABC","3" to "DEF"),listOf("4" to "GHI","5" to "JKL","6" to "MNO"),listOf("7" to "PQRS","8" to "TUV","9" to "WXYZ"),listOf("*" to "","0" to "+","#" to ""))
                 rows.forEach { row -> Row(Modifier.fillMaxWidth().padding(vertical=4.dp),horizontalArrangement=Arrangement.SpaceEvenly) { row.forEach { (digit,letters) ->
-                    Column(Modifier.size(keySize.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surface.copy(alpha=if(prefs.glass) .85f else 1f)).combinedClickable(onClick={if(number.length<128) setNumber(number+digit);if(prefs.haptics) haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)},onLongClick={if(digit=="0" && number.length<128) setNumber(number+"+") else speeds.firstOrNull { it.slot.toString()==digit }?.let { onCall(it.number) }}),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.Center) {
+                    Column(Modifier.size(keySize.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surfaceVariant).combinedClickable(onClick={if(number.length<128) setNumber(number+digit);if(prefs.haptics) haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)},onLongClick={if(digit=="0" && number.length<128) setNumber(number+"+") else speeds.firstOrNull { it.slot.toString()==digit }?.let { onCall(it.number) }}),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.Center) {
                         Text(digit,fontSize=if(keySize<64f) 28.sp else 32.sp,lineHeight=if(keySize<64f) 30.sp else 34.sp)
                         Text(letters.ifBlank { " " },fontSize=12.sp,lineHeight=14.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,fontWeight=FontWeight.Medium)
                     }
                 } } }
             }
             Spacer(Modifier.height(8.dp))
-            Button(onClick={onCall(number)},enabled=number.isNotBlank(),shape=CircleShape,modifier=Modifier.size(68.dp),contentPadding=PaddingValues(0.dp)) { Icon(Icons.Default.Call,"Llamar",modifier=Modifier.size(30.dp)) }
+            Button(onClick={onCall(number)},enabled=number.isNotBlank(),shape=CircleShape,colors=ButtonDefaults.buttonColors(containerColor=DialerPalette.CallGreen,contentColor=Color.White),modifier=Modifier.size(68.dp),contentPadding=PaddingValues(0.dp)) { Icon(Icons.Default.Call,"Llamar",modifier=Modifier.size(30.dp)) }
             Spacer(Modifier.height(8.dp))
             Text("Mantén 0 para + · Mantén 2–9 para marcación rápida",style=MaterialTheme.typography.bodyMedium,textAlign=androidx.compose.ui.text.style.TextAlign.Center,color=MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(12.dp))

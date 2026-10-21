@@ -17,6 +17,9 @@ import javax.inject.Inject
     val recents=MutableStateFlow<List<Recent>>(emptyList())
     val blocked=MutableStateFlow<List<Blocked>>(emptyList())
     val message=MutableStateFlow<String?>(null)
+    val diagnosticReport=MutableStateFlow<String?>(null)
+    fun loadDiagnostics()=work { diagnosticReport.value=kotlinx.coroutines.withContext(Dispatchers.IO) { com.pablormlopez.iphonedialer.diagnostics.AppDiagnostics.read(context) } }
+    fun clearDiagnostics()=work { kotlinx.coroutines.withContext(Dispatchers.IO) { com.pablormlopez.iphonedialer.diagnostics.AppDiagnostics.clear(context) };diagnosticReport.value=null }
     val prefs=preferences.flow.stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),Preferences())
     val speedDials=speeds.observe().stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
     private var refreshJob: Job?=null

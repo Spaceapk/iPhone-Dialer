@@ -1,11 +1,11 @@
 # iPhone Dialer · Android
 
-**Estado: desarrollo alfa, no versión 1.0.0 estable.** Aplicación Kotlin/Compose nativa: no WebView, datos ficticios ni simulación de llamadas. Las acciones de llamada utilizan Android Telecom y los contactos/historial provienen de los proveedores del dispositivo. Que una ruta esté implementada no significa que se haya validado en hardware real.
+**Estado: alpha02, corrección candidata y rediseño clásico; no validada en el HOT 40i y sin APK nueva firmada.** Aplicación Kotlin/Compose nativa: no WebView, datos ficticios ni simulación de llamadas. Las acciones de llamada utilizan Android Telecom y los contactos/historial provienen de los proveedores del dispositivo. Que una ruta esté implementada no significa que se haya validado en hardware real.
 
 ## Identidad
 - Identificador propuesto para producción: `com.pablormlopez.iphonedialer` (confirmar antes de publicar).
 - APK de evaluación: `com.pablormlopez.iphonedialer.debug`.
-- Versión actual: `1.0.0-alpha01` (el APK añade `-debug`).
+- Versión actual: `1.0.0-alpha02` (el APK añade `-debug`).
 - Android 10/API 29 o posterior, compile/target SDK 36, Java 17.
 - Recursos originales; no afiliada a Apple. Revisar el nombre comercial y las marcas antes de distribuir.
 
@@ -20,7 +20,7 @@
 - Exportación VCF con selector de destino e importación delegada al gestor de contactos instalado; compartir vCard.
 - Marcación rápida local 2–9, accesos directos fijados si el launcher los admite.
 - Lista de bloqueo oficial de Android cuando el rol/perfil lo autoriza; detección local de candidatos duplicados por número (sin fusión automática).
-- Tema del sistema/claro/oscuro, tres acentos, transparencia, tamaño adicional de texto, vibración, animaciones y pestaña inicial persistentes.
+- Tema del sistema/claro/oscuro, tres acentos, superficies sólidas, tamaño adicional de texto, vibración, animaciones y pestaña inicial persistentes.
 - Solicitud opcional de `READ_PHONE_STATE` para preguntar qué cuenta/SIM usar en cada llamada cuando hay varias.
 
 **Consulta `docs/LIMITATIONS.md` y `docs/TEST_REPORT.md` antes de instalar o usar como teléfono predeterminado.** No es todavía el cumplimiento íntegro del prompt maestro. No sustituir el marcador de un teléfono crítico sin pruebas adicionales.
@@ -32,22 +32,22 @@
 4. Ejecutar:
 
 ```sh
-./gradlew testDebugUnitTest lintDebug assembleDebug
+./gradlew testDebugUnitTest lintDebug
 # Con dispositivo/emulador autorizado conectado:
 ./gradlew connectedDebugAndroidTest
 ```
 
-APK: `app/build/outputs/apk/debug/app-debug.apk`.
+La compilación JVM y Lint no requieren una firma. Empaquetar una APK debug queda bloqueado si no se proporciona una identidad de evaluación **existente**; no se crea otra clave en silencio. Variables: `ANDROID_EVALUATION_KEYSTORE_PATH`, `ANDROID_EVALUATION_KEYSTORE_PASSWORD`, `ANDROID_EVALUATION_KEY_ALIAS`, `ANDROID_EVALUATION_KEY_PASSWORD`. La clave de la alpha01 no está en la entrega ni en este entorno y no se puede reconstruir desde su APK. Una clave nueva no permite actualizar la alpha01 instalada.
 
-## Instalar una compilación de evaluación
-- Transferir el APK al teléfono e instalarlo permitiendo esa fuente; o ejecutar `adb install -r app-debug.apk` en tu ordenador.
-- Abrir la app; elegir «Usar como teléfono» y confirmar en el diálogo de Android.
-- Autorizar contactos e historial solo al abrir esas funciones; habilitar notificaciones de llamadas en Configuración. Android 14+ puede requerir autorización de pantalla completa.
-- Para volver al marcador anterior: Ajustes de Android → Aplicaciones → Aplicaciones predeterminadas → Teléfono.
-- No realizar llamadas de emergencia como prueba. Verificar el mecanismo mediante revisión y procedimientos autorizados, nunca llamando a un servicio real sin necesidad.
+Producción sigue usando las variables `ANDROID_KEYSTORE_*` del apartado de firma. Hasta definir una identidad permanente y su custodia, esta revisión se entrega como fuentes, no como APK instalable.
+
+## Estado de instalación y seguridad
+No se ha entregado una APK alpha02. No reutilizar ni renombrar la APK alpha01 como si contuviera esta corrección. La nueva instalación requiere resolver primero la firma.
+
+Si la alpha01 se cierra al llamar, vuelve temporalmente al marcador original desde Ajustes de Android → Aplicaciones predeterminadas → Teléfono (los nombres pueden variar según el fabricante). No dependas de la alfa para llamadas importantes ni pruebes números de emergencia.
 
 ## Firma y futuras actualizaciones
-El APK debug usa la identidad de desarrollo del entorno y **no** es una entrega firmada para producción. No se incluye esa clave privada ni se garantiza actualizar este APK desde otro entorno. Para la siguiente evaluación, puede ser necesario desinstalar la alfa (se perderán sus preferencias/teclas rápidas, no la agenda del sistema).
+La APK alpha01 usó una identidad de desarrollo que no está disponible en esta revisión; **no** era una entrega firmada para producción. No se incluye esa clave privada ni se garantiza actualizar este APK desde otro entorno. Para instalar con una identidad distinta, será necesario instalar otro identificador o desinstalar la alfa (se perderán sus preferencias/teclas rápidas, no la agenda del sistema).
 
 Para producción se debe aprovisionar **una sola clave permanente**, mantenerla fuera del repositorio y custodiar dos copias cifradas con recuperación probada. No generar otra para cada versión. Variables protegidas requeridas: `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Usar un gestor de secretos/variables de archivo; no escribir contraseñas en comandos registrados, README ni Git.
 
@@ -75,3 +75,12 @@ git push gitlab main
 ```
 
 No se ha creado ni publicado un repositorio remoto. El nombre `main` no implica que esta alfa sea apta para producción.
+
+## Cambios solicitados en alpha02
+- Notificaciones salientes/en curso ordinarias con acción real Finalizar: se retira CallStyle de esa ruta porque el servicio está enlazado, no en primer plano.
+- CallStyle entrante solo si se adjunta un full-screen intent autorizado; alternativa normal si está restringido. Construcción/publicación controlan rechazos de Android sin convertirlos en un cierre no controlado.
+- Interfaz clásica: blanco/gris, azul de acción, teclado gris, botón de llamada verde y llamada en negro sólido. Sin Liquid Glass, gradientes ni paneles translúcidos.
+- Informe técnico local compartido solo por acción explícita del usuario; no incluye mensajes de excepción, nombres ni números. No captura ANR, cierres nativos ni terminaciones forzadas del sistema.
+- Pruebas nuevas de contrato de notificación Android 13 con Robolectric y renderizado Compose. No equivalen a probar una llamada real en el HOT 40i.
+
+Ver `docs/ALPHA02_FIX.md` y el informe actual. Las evidencias de alpha01 quedaron archivadas en `docs/history/alpha01/`; no son resultados de alpha02.

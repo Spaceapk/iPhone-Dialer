@@ -1,7 +1,4 @@
-# Alcance de inspección visual
+# QA visual alpha02
+Ambas imágenes se inspeccionaron individualmente. Renderizados de pruebas Robolectric API33, 393×852dp, con KeypadScreen real y contenedor de pruebas. No son capturas del teléfono del usuario.
 
-La captura del diálogo oficial de rol corresponde a la primera compilación de evaluación. Se inspeccionaron inicialmente las pestañas y llamadas, y se detectaron/corrigieron superposiciones y la disposición del teclado.
-
-La comprobación instrumentada final de Favoritos aprobó, pero no se completó una inspección visual manual de todas las pantallas corregidas: el emulador presentó bloqueos recurrentes de System UI. No se declara QA visual final aprobada. Se retiraron las capturas fallidas o desactualizadas para no presentarlas como evidencia del resultado final.
-
-No se validó visualmente de forma exhaustiva el modo oscuro forzado, orientaciones, escalado de fuente ni todas las pantallas/diálogos. Antes de usar la app como teléfono principal es necesario completar esta revisión en un dispositivo real.
+Aprobado en este tamaño: todos los dígitos y cinco pestañas visibles, sin superposición, temas sólidos claro/oscuro, llamada deshabilitada para número vacío. Pendiente: otras resoluciones, texto grande, navegación por gestos, llamada real y TalkBack en hardware. Ver TEST_REPORT.md.

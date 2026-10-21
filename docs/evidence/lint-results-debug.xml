@@ -12,7 +12,7 @@
         errorLine1="distributionUrl=https\://services.gradle.org/distributions/gradle-8.11.1-bin.zip"
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/gradle/wrapper/gradle-wrapper.properties"
+            file="/data/iphone-dialer/gradle/wrapper/gradle-wrapper.properties"
             line="3"
             column="17"/>
     </issue>
@@ -28,7 +28,7 @@
         errorLine1="    implementation(&quot;androidx.core:core-ktx:1.16.0&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="49"
             column="20"/>
     </issue>
@@ -44,7 +44,7 @@
         errorLine1="    implementation(&quot;androidx.activity:activity-compose:1.10.1&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="50"
             column="20"/>
     </issue>
@@ -60,7 +60,7 @@
         errorLine1="    implementation(&quot;androidx.lifecycle:lifecycle-runtime-compose:2.9.0&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="51"
             column="20"/>
     </issue>
@@ -76,7 +76,7 @@
         errorLine1="    implementation(&quot;androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="52"
             column="20"/>
     </issue>
@@ -92,7 +92,7 @@
         errorLine1="    implementation(&quot;androidx.datastore:datastore-preferences:1.1.7&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="57"
             column="20"/>
     </issue>
@@ -108,7 +108,7 @@
         errorLine1="    implementation(&quot;androidx.room:room-runtime:2.7.1&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="58"
             column="20"/>
     </issue>
@@ -124,7 +124,7 @@
         errorLine1="    implementation(&quot;androidx.room:room-ktx:2.7.1&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="59"
             column="20"/>
     </issue>
@@ -140,9 +140,25 @@
         errorLine1="    kapt(&quot;androidx.room:room-compiler:2.7.1&quot;)"
         errorLine2="         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="60"
             column="10"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        severity="Warning"
+        message="A newer version of androidx.test:core-ktx than 1.6.1 is available: 1.7.0"
+        category="Correctness"
+        priority="4"
+        summary="Obsolete Gradle Dependency"
+        explanation="This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find."
+        errorLine1="    testImplementation(&quot;androidx.test:core-ktx:1.6.1&quot;)"
+        errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/data/iphone-dialer/app/build.gradle.kts"
+            line="66"
+            column="24"/>
     </issue>
 
     <issue
@@ -156,8 +172,8 @@
         errorLine1="    androidTestImplementation(&quot;androidx.test.ext:junit:1.2.1&quot;)"
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
-            line="66"
+            file="/data/iphone-dialer/app/build.gradle.kts"
+            line="69"
             column="31"/>
     </issue>
 
@@ -172,25 +188,9 @@
         errorLine1="    androidTestImplementation(&quot;androidx.test:runner:1.6.2&quot;)"
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
-            line="67"
+            file="/data/iphone-dialer/app/build.gradle.kts"
+            line="70"
             column="31"/>
-    </issue>
-
-    <issue
-        id="ModifierParameter"
-        severity="Warning"
-        message="Modifier parameter should be the first optional parameter"
-        category="Correctness"
-        priority="3"
-        summary="Guidelines for Modifier parameters in a Composable function"
-        explanation="The first (or only) Modifier parameter in a Composable function should follow the following rules:&#xA;- Be named `modifier`&#xA;- Have a type of `Modifier`&#xA;- Either have no default value, or have a default value of `Modifier`&#xA;- If optional, be the first optional parameter in the parameter list"
-        errorLine1="@Composable fun GlassPanel(glass: Boolean=true, modifier: Modifier=Modifier, content: @Composable ColumnScope.()->Unit) {"
-        errorLine2="                                                ~~~~~~~~">
-        <location
-            file="/vercel/sandbox/data/iphone-dialer/app/src/main/java/com/pablormlopez/iphonedialer/ui/Components.kt"
-            line="23"
-            column="49"/>
     </issue>
 
     <issue
@@ -206,7 +206,7 @@
         errorLine1="        android:dataExtractionRules=&quot;@xml/data_extraction_rules&quot; android:supportsRtl=&quot;true&quot; android:usesCleartextTraffic=&quot;false&quot;>"
         errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/src/main/AndroidManifest.xml"
+            file="/data/iphone-dialer/app/src/main/AndroidManifest.xml"
             line="15"
             column="38"/>
     </issue>
@@ -224,7 +224,7 @@
         errorLine1="    kapt(&quot;androidx.room:room-compiler:2.7.1&quot;)"
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/build.gradle.kts"
+            file="/data/iphone-dialer/app/build.gradle.kts"
             line="60"
             column="5"/>
     </issue>
@@ -240,25 +240,9 @@
         errorLine1="    &lt;uses-feature android:name=&quot;android.hardware.telephony&quot; android:required=&quot;true&quot; />"
         errorLine2="                                ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/src/main/AndroidManifest.xml"
+            file="/data/iphone-dialer/app/src/main/AndroidManifest.xml"
             line="3"
             column="33"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        severity="Warning"
-        message="Use the KTX extension function `String.toUri` instead?"
-        category="Productivity"
-        priority="6"
-        summary="Use KTX extension function"
-        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
-        errorLine1="    val image by produceState&lt;android.graphics.Bitmap?>(null,contact?.photo) { value=withContext(Dispatchers.IO) { runCatching { contact?.photo?.let { context.contentResolver.openInputStream(Uri.parse(it))?.use { stream -> BitmapFactory.decodeStream(stream) } } }.getOrNull() } }"
-        errorLine2="                                                                                                                                                                                               ~~~~~~~~~~~~~">
-        <location
-            file="/vercel/sandbox/data/iphone-dialer/app/src/main/java/com/pablormlopez/iphonedialer/ui/Components.kt"
-            line="29"
-            column="192"/>
     </issue>
 
     <issue
@@ -272,7 +256,7 @@
         errorLine1="    if(settings) SettingsSheet(vm,prefs,roleHeld,{settings=false},onPermission={p,reason -> request(p,reason) { revision++ } },onExport={if(vm.has(Manifest.permission.READ_CONTACTS)) exportLauncher.launch(&quot;contactos.vcf&quot;) else request(Manifest.permission.READ_CONTACTS,&quot;Lee tu agenda para exportarla al archivo que elijas.&quot;) { vm.refresh() }},onImport={importLauncher.launch(arrayOf(&quot;text/x-vcard&quot;,&quot;text/vcard&quot;,&quot;application/octet-stream&quot;))},onFullscreen={if(Build.VERSION.SDK_INT>=34) safeIntent(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,Uri.parse(&quot;package:${context.packageName}&quot;)))},onConfirm={text,act -> confirm=text to act})"
         errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/src/main/java/com/pablormlopez/iphonedialer/ui/MainActivity.kt"
+            file="/data/iphone-dialer/app/src/main/java/com/pablormlopez/iphonedialer/ui/MainActivity.kt"
             line="144"
             column="554"/>
     </issue>
@@ -288,7 +272,7 @@
         errorLine1="        telecom.placeCall(Uri.parse(&quot;voicemail:&quot;),Bundle())"
         errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="/vercel/sandbox/data/iphone-dialer/app/src/main/java/com/pablormlopez/iphonedialer/telephony/PhoneGateway.kt"
+            file="/data/iphone-dialer/app/src/main/java/com/pablormlopez/iphonedialer/telephony/PhoneGateway.kt"
             line="26"
             column="27"/>
     </issue>

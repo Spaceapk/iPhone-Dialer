@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0-alpha02 (candidata, sin nueva APK firmada)
+- Corrige la construcción inválida de notificaciones CallStyle salientes en Android 12/13.
+- Controla rechazos de notificación y añade informe técnico local sin datos de llamadas.
+- Retira Liquid Glass y adopta superficies sólidas y estilo iOS clásico.
+- Acota la carga de fotografías y adapta las barras del sistema al tema elegido.
+- Añade regresión del contrato de Android 13, privacidad del informe y renderizado Compose.
+- Bloquea empaquetado debug sin una firma existente, para no sustituir silenciosamente la identidad de alpha01.
+
 ## 1.0.0-alpha01
 - Primera base nativa Kotlin/Compose con Hilt, Telecom, ContactsContract, Room y DataStore.
 - Pantallas de navegación, llamadas y administración local descritas en README.

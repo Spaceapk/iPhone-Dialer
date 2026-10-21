@@ -55,7 +55,7 @@ private fun callType(type: Int)=when(type) { CallLog.Calls.INCOMING_TYPE -> "Ent
     ModalBottomSheet(onDismissRequest=onDismiss) { Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp),verticalArrangement=Arrangement.spacedBy(12.dp),horizontalAlignment=Alignment.CenterHorizontally) {
         Avatar(contact,contact.name,84);Text(contact.name,style=MaterialTheme.typography.headlineMedium)
         Row { IconButton(onClick=onFavorite) { Icon(if(contact.starred) Icons.Default.Star else Icons.Default.StarBorder,if(contact.starred) "Quitar favorito" else "Añadir favorito") };IconButton(onClick=onEdit) { Icon(Icons.Default.Edit,"Editar contacto") };IconButton(onClick=onShare) { Icon(Icons.Default.Share,"Compartir vCard") } }
-        contact.phones.forEach { n -> GlassPanel(modifier=Modifier.fillMaxWidth()) { Text(n,style=MaterialTheme.typography.titleLarge);Row { TextButton(onClick={onCall(n)}) { Text("Llamar") };TextButton(onClick={speed=n}) { Text("Marcación rápida") } } } }
+        contact.phones.forEach { n -> GroupedPanel(modifier=Modifier.fillMaxWidth()) { Text(n,style=MaterialTheme.typography.titleLarge);Row { TextButton(onClick={onCall(n)}) { Text("Llamar") };TextButton(onClick={speed=n}) { Text("Marcación rápida") } } } }
         TextButton(onClick=onShortcut) { Text("Añadir acceso a inicio") }
         Text("La edición se realiza en el editor autorizado de Android: nombres, fotos, múltiples teléfonos, correos, direcciones y cuenta.",style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
         TextButton(onClick=onDelete) { Text("Eliminar contacto",color=MaterialTheme.colorScheme.error) };Spacer(Modifier.height(20.dp))
@@ -64,14 +64,17 @@ private fun callType(type: Int)=when(type) { CallLog.Calls.INCOMING_TYPE -> "Ent
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun SettingsSheet(vm: MainViewModel,prefs: Preferences,roleHeld: Boolean,onDismiss: ()->Unit,onPermission: (String,String)->Unit,onExport: ()->Unit,onImport: ()->Unit,onFullscreen: ()->Unit,onConfirm: (String,()->Unit)->Unit) {
+    val context=androidx.compose.ui.platform.LocalContext.current
+    val technicalReport by vm.diagnosticReport.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { vm.loadDiagnostics() }
     val blocked by vm.blocked.collectAsStateWithLifecycle();val contacts by vm.contacts.collectAsStateWithLifecycle();val speedDials by vm.speedDials.collectAsStateWithLifecycle()
     var number by rememberSaveable { mutableStateOf("") };var showBlocked by rememberSaveable { mutableStateOf(false) };var showDuplicates by rememberSaveable { mutableStateOf(false) }
     ModalBottomSheet(onDismissRequest=onDismiss) { Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal=24.dp).padding(bottom=32.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
         Text("A tu manera",style=MaterialTheme.typography.headlineLarge,fontWeight=FontWeight.Bold)
         Text("Apariencia",style=MaterialTheme.typography.titleLarge)
+        Text("Estilo clásico: fondos sólidos, sin vidrio, desenfoque ni transparencias.",style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
         Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)) { listOf("system" to "Sistema","light" to "Claro","dark" to "Oscuro").forEach { (key,name) -> FilterChip(selected=prefs.theme==key,onClick={vm.work { vm.preferences.set("theme",key) }},label={Text(name)}) } }
         Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) { listOf("green" to "Verde","blue" to "Azul","violet" to "Violeta").forEach { (key,name) -> FilterChip(selected=prefs.accent==key,onClick={vm.work { vm.preferences.set("accent",key) }},label={Text(name)}) } }
-        SettingToggle("Superficies translúcidas",prefs.glass) { vm.work { vm.preferences.set("glass",it) } }
         SettingToggle("Animaciones entre pestañas",prefs.animations) { vm.work { vm.preferences.set("animations",it) } }
         SettingToggle("Vibración del teclado",prefs.haptics) { vm.work { vm.preferences.set("haptics",it) } }
         Text("Tamaño de texto: ${(prefs.textScale*100).toInt()} % (además del ajuste del sistema)")
@@ -100,9 +103,17 @@ private fun callType(type: Int)=when(type) { CallLog.Calls.INCOMING_TYPE -> "Ent
             groups.take(30).forEach { group -> Text(group.joinToString(" · ") { it.name },style=MaterialTheme.typography.bodyMedium) }
         }
         if(speedDials.isNotEmpty()) { Text("Marcación rápida",style=MaterialTheme.typography.titleMedium);speedDials.forEach { s -> Row(verticalAlignment=Alignment.CenterVertically) { Text("${s.slot} · ${s.name}",modifier=Modifier.weight(1f));IconButton(onClick={onConfirm("¿Quitar la asignación de la tecla ${s.slot}?") { vm.work { vm.speeds.remove(s.slot) } }}) { Icon(Icons.Default.Delete,"Quitar marcación rápida") } } } }
+        HorizontalDivider();Text("Informe técnico",style=MaterialTheme.typography.titleLarge)
+        Text(if(technicalReport==null) "No hay errores registrados en esta instalación." else "Hay un informe local sin contactos ni números. Solo se comparte si lo decides.",style=MaterialTheme.typography.bodyMedium)
+        if(technicalReport!=null) {
+            TextButton(onClick={
+                runCatching { context.startActivity(android.content.Intent.createChooser(android.content.Intent(android.content.Intent.ACTION_SEND).setType("text/plain").putExtra(android.content.Intent.EXTRA_TEXT,technicalReport),"Compartir informe técnico")) }.onFailure { vm.message.value="No se pudo abrir el selector para compartir." }
+            }) { Text("Compartir informe técnico") }
+            TextButton(onClick={onConfirm("¿Borrar el informe técnico local?") { vm.clearDiagnostics() }}) { Text("Borrar informe") }
+        }
         HorizontalDivider();Text("Privacidad",style=MaterialTheme.typography.titleLarge)
         Text("Sin anuncios, analítica, rastreadores ni permiso de Internet. La agenda y el historial se consultan en los proveedores de Android. Las preferencias y teclas rápidas permanecen en el almacenamiento privado de la aplicación. La agenda puede sincronizarse por las cuentas ya configuradas en Android. Exportar o compartir transmite datos solo al destino que elijas. No se graba audio ni se transcriben llamadas.")
-        Text("1.0.0-alpha01 · Compilación de evaluación, no versión estable",style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("${com.pablormlopez.iphonedialer.BuildConfig.VERSION_NAME} · Versión de evaluación",style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
     } }
 }
 @Composable private fun SettingToggle(label: String,checked: Boolean,onChange: (Boolean)->Unit) { Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) { Text(label,modifier=Modifier.weight(1f));Switch(checked,onChange) } }

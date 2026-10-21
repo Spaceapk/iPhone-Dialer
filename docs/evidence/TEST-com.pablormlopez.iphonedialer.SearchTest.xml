@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.pablormlopez.iphonedialer.SearchTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-10-21T21:41:05" hostname="95a4b794-bae" time="0.043">
+<testsuite name="com.pablormlopez.iphonedialer.SearchTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-10-21T23:15:58" hostname="ac1605c1-3e9" time="0.017">
   <properties/>
-  <testcase name="rejectScheme" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.007"/>
-  <testcase name="digitsStripFormatting" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.001"/>
-  <testcase name="t9Letters" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.01"/>
-  <testcase name="blankQuery" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.005"/>
-  <testcase name="zeroDuration" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.001"/>
-  <testcase name="validServiceCode" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
+  <testcase name="rejectScheme" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.001"/>
+  <testcase name="digitsStripFormatting" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
+  <testcase name="t9Letters" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.005"/>
+  <testcase name="blankQuery" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
+  <testcase name="zeroDuration" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
+  <testcase name="validServiceCode" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.001"/>
   <testcase name="validInternational" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
-  <testcase name="matchName" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
+  <testcase name="matchName" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.001"/>
   <testcase name="positiveDuration" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
   <testcase name="negativeDurationClamped" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.001"/>
-  <testcase name="matchT9" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
+  <testcase name="matchT9" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.001"/>
   <testcase name="rejectUriInjection" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
   <testcase name="rejectEmpty" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
   <testcase name="matchNumber" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
@@ -19,7 +19,7 @@
   <testcase name="rejectOversize" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.001"/>
   <testcase name="t9Accents" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
   <testcase name="t9Spaces" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
-  <testcase name="noMatch" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.006"/>
+  <testcase name="noMatch" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
   <testcase name="foldAccents" classname="com.pablormlopez.iphonedialer.SearchTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

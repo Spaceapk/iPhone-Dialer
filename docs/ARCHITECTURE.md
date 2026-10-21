@@ -8,7 +8,7 @@ Un módulo `app` con paquetes separados: `domain` (búsqueda/validación sin And
 - `CallStore` conserva únicamente referencias a las llamadas entregadas por Telecom durante la sesión; elimina callbacks al retirar llamadas y al destruir el servicio. No fabrica estados telefónicos ni historial.
 - La UI no marca una llamada activa hasta recibir ese estado del framework.
 - Android 14+: endpoints de audio y manejo explícito del resultado de cambio; Android 10–13: API de rutas compatible. Bluetooth y auriculares dependen de los endpoints ofrecidos por el sistema, sin escanear dispositivos.
-- No se declara `IN_CALL_SERVICE_RINGING`: se mantiene el timbre bajo Telecom; esto requiere validación por OEM. Canal entrante de alta importancia silencioso para evitar duplicar el timbre; CallStyle y PendingIntents explícitos/inmutables.
+- No se declara `IN_CALL_SERVICE_RINGING`: se mantiene el timbre bajo Telecom; esto requiere validación por OEM. Canal entrante de alta importancia silencioso para evitar duplicar el timbre; Notificación entrante CallStyle solo con full-screen intent; saliente normal con Finalizar, y PendingIntents explícitos/inmutables.
 - Cada llamada tiene ID interno y notificación independiente. Se omiten hijos de conferencia del listado principal. Conferencia y espera se habilitan solo cuando Telecom anuncia capacidad; hay selección de las otras llamadas y reanudación de llamadas en espera.
 - Emergencias: no filtrar números ni usar una lista regional propia; `placeCall` permite el traspaso oficial al marcador preinstalado. No probado con un servicio real.
 - Contactos y llamadas no se copian a Room. Room guarda asignaciones locales de marcación rápida. DataStore guarda apariencia y preferencias; sin secretos.
@@ -18,7 +18,7 @@ Un módulo `app` con paquetes separados: `domain` (búsqueda/validación sin And
 - No se solicita Internet, micrófono, acceso a grabaciones, almacenamiento general ni permisos privilegiados.
 
 ## Decisiones visuales
-Superficies flotantes translúcidas, acento verde predeterminado, tipografía nativa, fotografía/monograma real y controles circulares. Contraste de texto sobre superficies, estados por texto e icono además de color. Las transparencias se pueden desactivar. La implementación es **inspirada** en Liquid Glass: no reproduce el motor de refracción/desenfoque de Apple, ni incluye recursos de Apple. No hay imágenes decorativas descargadas.
+Interfaz clásica con superficies sólidas blancas/grises, acento azul predeterminado, tipografía nativa, fotografía/monograma real y controles circulares. Contraste de texto sobre superficies, estados por texto e icono además de color. Se retiró el control de transparencias; los valores antiguos se ignoran sin borrar otras preferencias. No se usa Liquid Glass ni se incluyen recursos de Apple. No hay imágenes decorativas descargadas.
 
 ## Referencias oficiales consultadas
 - https://developer.android.com/reference/android/telecom/InCallService

@@ -20,20 +20,30 @@ import androidx.compose.ui.unit.*
 import com.pablormlopez.iphonedialer.data.Contact
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-@Composable fun GlassPanel(glass: Boolean=true, modifier: Modifier=Modifier, content: @Composable ColumnScope.()->Unit) {
-    val color=MaterialTheme.colorScheme.surface
-    Surface(modifier=modifier,shape=RoundedCornerShape(28.dp),color=color.copy(alpha=if(glass) .86f else 1f),border=BorderStroke(1.dp,MaterialTheme.colorScheme.outlineVariant.copy(alpha=.5f))) { Column(Modifier.padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp),content=content) }
+@Composable fun GroupedPanel(modifier: Modifier=Modifier, content: @Composable ColumnScope.()->Unit) {
+    Surface(modifier=modifier,shape=RoundedCornerShape(12.dp),color=MaterialTheme.colorScheme.surface) {
+        Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp),content=content)
+    }
 }
 @Composable fun Avatar(contact: Contact?, name: String, size: Int=48) {
     val context=LocalContext.current
-    val image by produceState<android.graphics.Bitmap?>(null,contact?.photo) { value=withContext(Dispatchers.IO) { runCatching { contact?.photo?.let { context.contentResolver.openInputStream(Uri.parse(it))?.use { stream -> BitmapFactory.decodeStream(stream) } } }.getOrNull() } }
+    val image by produceState<android.graphics.Bitmap?>(null,contact?.photo) {
+        value=withContext(Dispatchers.IO) { runCatching {
+            val uri=contact?.photo?.let(Uri::parse) ?: return@runCatching null
+            val bounds=BitmapFactory.Options().apply { inJustDecodeBounds=true }
+            context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it,null,bounds) }
+            var sample=1
+            while(bounds.outWidth/sample>384 || bounds.outHeight/sample>384) sample*=2
+            context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it,null,BitmapFactory.Options().apply { inSampleSize=sample }) }
+        }.getOrNull() }
+    }
     Box(Modifier.size(size.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),contentAlignment=Alignment.Center) {
         if(image!=null) Image(image!!.asImageBitmap(),contentDescription=null,contentScale=ContentScale.Crop,modifier=Modifier.fillMaxSize())
         else if(name.none { it.isLetter() }) Icon(Icons.Default.Person,contentDescription=null,modifier=Modifier.size((size*.52f).dp),tint=MaterialTheme.colorScheme.onPrimaryContainer)
         else Text(name.trim().split(" ").filter { it.isNotBlank() }.take(2).map { it.first().uppercaseChar() }.joinToString("").ifBlank { "?" },fontSize=(size*.32).sp,fontWeight=FontWeight.Medium,color=MaterialTheme.colorScheme.onPrimaryContainer)
     }
 }
-@Composable fun EmptyPanel(title: String, message: String, action: String?=null, onAction: ()->Unit={}) { GlassPanel(modifier=Modifier.fillMaxWidth()) { Text(title,style=MaterialTheme.typography.titleLarge);Text(message,color=MaterialTheme.colorScheme.onSurfaceVariant);if(action!=null) Button(onClick=onAction) { Text(action) } } }
+@Composable fun EmptyPanel(title: String, message: String, action: String?=null, onAction: ()->Unit={}) { GroupedPanel(modifier=Modifier.fillMaxWidth()) { Text(title,style=MaterialTheme.typography.titleLarge);Text(message,color=MaterialTheme.colorScheme.onSurfaceVariant);if(action!=null) Button(onClick=onAction) { Text(action) } } }
 @Composable fun ConfirmDialog(title: String, message: String, action: String="Confirmar", onDismiss: ()->Unit, onConfirm: ()->Unit) {
     AlertDialog(onDismissRequest=onDismiss,title={Text(title)},text={Text(message)},confirmButton={TextButton(onClick={onDismiss();onConfirm()}) { Text(action) }},dismissButton={TextButton(onClick=onDismiss) { Text("Cancelar") }})
 }

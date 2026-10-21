@@ -13,8 +13,8 @@ android {
         applicationId = "com.pablormlopez.iphonedialer"
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0-alpha01"
+        versionCode = 2
+        versionName = "1.0.0-alpha02"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -39,7 +39,7 @@ android {
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true; buildConfig = true }
-    testOptions { unitTests.isReturnDefaultValues = true }
+    testOptions { unitTests.isReturnDefaultValues = true; unitTests.isIncludeAndroidResources = true }
     lint { abortOnError = true; checkReleaseBuilds = true }
 }
 kapt { correctErrorTypes = true }
@@ -62,9 +62,31 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.56.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("androidx.test:core-ktx:1.6.1")
+    testImplementation("androidx.compose.ui:ui-test-junit4")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
+
+// No silent replacement of the missing alpha01 signing identity.
+// JVM tests and unsigned release compilation do not need a signing key.
+tasks.matching { it.name == "validateSigningDebug" }.configureEach {
+    doFirst {
+        check(System.getenv("ANDROID_EVALUATION_KEYSTORE_PATH")?.let { it.isNotBlank() && file(it).isFile } == true) {
+            "Original evaluation signing identity is unavailable. Do not generate a replacement key silently. Configure a maintained identity before packaging an APK."
+        }
+    }
+}
+android.signingConfigs.named("debug") {
+    System.getenv("ANDROID_EVALUATION_KEYSTORE_PATH")?.let { path ->
+        storeFile = file(path)
+        storePassword = System.getenv("ANDROID_EVALUATION_KEYSTORE_PASSWORD")
+        keyAlias = System.getenv("ANDROID_EVALUATION_KEY_ALIAS")
+        keyPassword = System.getenv("ANDROID_EVALUATION_KEY_PASSWORD")
+    }
+}
+tasks.withType<Test>().configureEach { maxHeapSize = "768m"; maxParallelForks = 1; systemProperty("robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2") }

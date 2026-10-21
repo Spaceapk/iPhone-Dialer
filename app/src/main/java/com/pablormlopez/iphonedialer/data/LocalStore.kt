@@ -20,9 +20,13 @@ import javax.inject.Singleton
 @Database(entities=[SpeedDial::class], version=1, exportSchema=false)
 abstract class LocalDatabase: RoomDatabase() { abstract fun speedDials(): SpeedDialDao }
 private val Context.settings by preferencesDataStore("settings")
-data class Preferences(val theme: String="system", val accent: String="green", val glass: Boolean=true, val haptics: Boolean=true, val start: Int=3, val textScale: Float=1f, val animations: Boolean=true)
+data class Preferences(val theme: String="system", val accent: String="blue", val haptics: Boolean=true, val start: Int=3, val textScale: Float=1f, val animations: Boolean=true)
 @Singleton class SettingsStore @Inject constructor(@ApplicationContext private val context: Context) {
-    val flow: Flow<Preferences> = context.settings.data.catch { if (it is java.io.IOException) emit(emptyPreferences()) else throw it }.map { Preferences(it[stringPreferencesKey("theme")] ?: "system", it[stringPreferencesKey("accent")] ?: "green", it[booleanPreferencesKey("glass")] ?: true, it[booleanPreferencesKey("haptics")] ?: true, it[intPreferencesKey("start")] ?: 3, it[floatPreferencesKey("scale")] ?: 1f, it[booleanPreferencesKey("animations")] ?: true) }
+    val flow: Flow<Preferences> = context.settings.data.catch { if (it is java.io.IOException) emit(emptyPreferences()) else throw it }.map {
+        Preferences(theme=it[stringPreferencesKey("theme")] ?: "system", accent=it[stringPreferencesKey("accent")] ?: "blue",
+            haptics=it[booleanPreferencesKey("haptics")] ?: true, start=it[intPreferencesKey("start")] ?: 3,
+            textScale=it[floatPreferencesKey("scale")] ?: 1f, animations=it[booleanPreferencesKey("animations")] ?: true)
+    }
     suspend fun set(key: String, value: String) { context.settings.edit { it[stringPreferencesKey(key)] = value } }
     suspend fun set(key: String, value: Boolean) { context.settings.edit { it[booleanPreferencesKey(key)] = value } }
     suspend fun start(value: Int) { context.settings.edit { it[intPreferencesKey("start")] = value.coerceIn(0,4) } }
