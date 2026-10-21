@@ -1,0 +1,3 @@
+Initial alpha build, before visual refinements. Virtual emulator modem only, not a carrier call.
+Observed: incoming UI; answer; modem reports inbound 5550101 active; UI end returns modem to no active calls.
+Telecom source integration unchanged during visual refinement. This is not a repeat on the final APK.

@@ -15,7 +15,7 @@ Fecha: 2026-10-21. **Alcance: build debug y emulador; no validación de producci
 | `lintDebug` | 0 errores, 18 advertencias; no se deshabilitó abortOnError ni se añadió baseline para ocultar errores |
 | `assembleDebugAndroidTest` | APK instrumentado generado |
 | Instalación con adb | App debug y APK de pruebas instalados con éxito |
-| AndroidJUnitRunner | 2 pruebas de UI, ambas aprobadas: entrada de dígitos/acción de llamada por callback y controles deshabilitados con campo vacío |
+| AndroidJUnitRunner | 3 pruebas de UI, todas aprobadas: entrada de dígitos/acción de llamada por callback con botón visible, controles deshabilitados con campo vacío y ausencia de superposición en Favoritos |
 | `apksigner verify` | APK válido, esquema v2, certificado Android Debug; **no** firma de producción |
 | `zipalign -c -P 16 4` | Comprobación aprobada (no equivale a probar ejecución en dispositivo de páginas de 16 KB) |
 | `check-project.py` | Comprobaciones básicas de manifest/configuración aprobadas; no material de firma privado en fuentes |
@@ -35,3 +35,12 @@ GitLab y Codemagic: solo configuración local, sin ejecución remota. Google Dri
 
 ## Evidencias
 Resultados XML unitarios, XML de Lint, verificación pública del certificado debug y capturas cuando se hayan podido inspeccionar. Ninguna evidencia contiene una clave privada. Los datos de prueba que se introduzcan en el emulador son exclusivamente sintéticos, nunca la agenda del usuario.
+
+## Inspección e integración en el emulador
+- Se abrió el diálogo oficial de ROLE_DIALER y se seleccionó la app; `dumpsys role` confirmó el paquete debug como titular.
+- Se inyectó una llamada solo en el módem virtual del emulador. La pantalla propia recibió el estado entrante, el botón Contestar llevó a estado activo confirmado por `adb emu gsm list`, y Finalizar eliminó la sesión. No se realizó una llamada por red móvil.
+- En la primera compilación se inspeccionaron pantallas principales y la interfaz de llamada. La inspección detectó superposición de búsqueda/estado vacío en Favoritos/Contactos y falta de acceso inmediato al botón Llamar en el viewport pequeño; se corrigieron y se añadió una prueba de regresión.
+- Tras fijar el botón, una prueba intentaba desplazarlo aunque ya no pertenecía al contenedor desplazable; ese intento falló. Se corrigió la prueba para exigir que el botón estuviera visible y se repitieron las tres pruebas con éxito sobre el mismo APK de aplicación.
+- Hubo alertas recurrentes de System UI sin respuesta durante el arranque/instalación e inspección; se recuperó con Esperar. El emulador también sufrió interrupciones por memoria al compilar simultáneamente y no pudo restaurar un snapshot; se separaron compilación y ejecución. No se extrapola estabilidad ni rendimiento de este entorno.
+- No se validaron CRUD de contactos, importación VCF, historial poblado, bloqueo, doble SIM ni conferencia en hardware. Las pantallas vacías no equivalen a validar esas operaciones.
+- La inspección visual final no se completó por bloqueos recurrentes de System UI del emulador. No se declara QA visual final aprobada. La prueba de llamada descrita fue anterior a los ajustes visuales; la integración Telecom no cambió, pero no equivale a repetir esa prueba en el APK final. Ver VISUAL_QA.md. No se verificaron TalkBack, contraste medido, todas las orientaciones ni los modos de tema.

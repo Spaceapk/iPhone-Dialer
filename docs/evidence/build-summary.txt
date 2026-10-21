@@ -1,0 +1,4 @@
+Final app build: assembleDebug, testDebugUnitTest, lintDebug, assembleDebugAndroidTest
+BUILD SUCCESSFUL in 1m 38s
+After updating the UI test: assembleDebugAndroidTest BUILD SUCCESSFUL; app source unchanged.
+AndroidJUnitRunner: OK (3 tests) on final app APK.

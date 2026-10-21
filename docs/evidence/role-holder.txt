@@ -1,0 +1,11 @@
+      }
+      {
+        name=android.app.role.DIALER
+        holders=com.pablormlopez.iphonedialer.debug
+      }
+      {
+        name=android.app.role.HOME
+        holders=com.android.launcher3
+      }
+      {
+        name=android.app.role.ASSISTANT

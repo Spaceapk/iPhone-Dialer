@@ -14,7 +14,7 @@ class KeypadTest {
         compose.setContent { var number by remember { mutableStateOf("") };DialerTheme(Preferences()) { KeypadScreen(number,{number=it},Preferences(),emptyList(),emptyList(),{dialed=it},{}) } }
         compose.onNodeWithText("2",useUnmergedTree=true).performClick()
         compose.onNodeWithText("5",useUnmergedTree=true).performClick()
-        compose.onNodeWithContentDescription("Llamar").performScrollTo().performClick()
+        compose.onNodeWithContentDescription("Llamar").assertIsDisplayed().performClick()
         compose.runOnIdle { assertEquals("25",dialed) }
     }
     @Test fun clearEmptyDoesNotCrash() {
