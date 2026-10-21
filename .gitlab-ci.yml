@@ -1,0 +1,40 @@
+image: eclipse-temurin:17-jdk
+stages: [verify, build, release]
+variables:
+  ANDROID_SDK_ROOT: "$CI_PROJECT_DIR/.android-sdk"
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle-cache"
+cache:
+  key: android-36-gradle-8-11
+  paths: [.android-sdk/, .gradle-cache/]
+before_script:
+  - apt-get update -qq && apt-get install -y -qq curl unzip
+  - bash scripts/bootstrap-android.sh
+  - chmod +x gradlew
+verify:
+  stage: verify
+  script:
+    - ./gradlew testDebugUnitTest lintDebug --no-daemon
+  artifacts:
+    when: always
+    reports:
+      junit: app/build/test-results/testDebugUnitTest/*.xml
+    paths: [app/build/reports/]
+    expire_in: 30 days
+apk-debug:
+  stage: build
+  script: ["./gradlew assembleDebug --no-daemon"]
+  artifacts:
+    paths: [app/build/outputs/apk/debug/]
+    expire_in: 90 days
+release-signed:
+  stage: release
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
+      when: manual
+  script:
+    - bash scripts/require-signing.sh
+    - ./gradlew assembleRelease bundleRelease --no-daemon
+    - '"$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify --verbose app/build/outputs/apk/release/app-release.apk'
+  artifacts:
+    paths: [app/build/outputs/apk/release/, app/build/outputs/bundle/release/, app/build/outputs/mapping/release/]
+    expire_in: 1 year
