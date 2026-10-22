@@ -1,5 +1,15 @@
 # iPhone Dialer · Android
 
+## Descargar la aplicación
+
+- **[Descargar APK alpha03 para Android](https://github.com/Spaceapk/iPhone-Dialer/releases/download/v1.0.0-alpha03/iPhoneDialer-FotoContacto-alpha03.apk)**
+- [Página de la versión y archivos](https://github.com/Spaceapk/iPhone-Dialer/releases/tag/v1.0.0-alpha03)
+
+Desde el teléfono, abre el enlace APK, descarga el archivo y ábrelo desde Descargas. Solo el APK se instala directamente; el ZIP es código fuente y el AAB es un artefacto de distribución. Si tienes alpha02, instala encima sin desinstalar: conserva paquete y firma. Esta entrega sigue siendo alfa, no una versión estable certificada. Mantén disponible el marcador original para llamadas importantes.
+
+El repositorio es público. No contiene la clave privada de firma ni las contraseñas: conserva el respaldo confidencial entregado por separado. GitHub aloja estos archivos, no los contactos ni el historial del teléfono.
+
+
 **Estado: alpha03, alfa con fotografía de contacto como fondo de llamada.** Interfaz nativa Kotlin/Compose; no WebView ni simulación de llamadas. Desenfoque solo en la imagen, nunca en los controles; no Liquid Glass. Pendiente validar en el HOT 40i Android 13. Que una ruta compile o tenga pruebas JVM no significa que esté validada en hardware real.
 
 ## Identidad
@@ -59,7 +69,7 @@ bash scripts/require-signing.sh
 `require-signing.sh` falla si falta la identidad. El build local sin estas variables puede producir artefactos release sin firma; **no** son instalables/publicables como entrega final. Verificar con `apksigner verify --verbose` y registrar huella pública del certificado, SHA-256 del APK, `versionCode`, tag y notas de cada versión. Mantener el mismo identificador y certificado; incrementar `versionCode`.
 
 ## GitLab / Codemagic / respaldos
-Los archivos `.gitlab-ci.yml` y `codemagic.yaml` están preparados, **no ejecutados en esas plataformas**. Configurar runners, repositorio remoto y credenciales con el propietario. En Codemagic registrar la referencia de firma `iphonedialer_release`. No hay conexión a GitLab, Codemagic ni Google Drive en esta entrega. No se ha subido nada a esos servicios.
+Los archivos `.gitlab-ci.yml` y `codemagic.yaml` están preparados, **no ejecutados en esas plataformas**. Configurar runners, repositorio remoto y credenciales con el propietario. En Codemagic registrar la referencia de firma `iphonedialer_release`. No hay conexión a GitLab, Codemagic ni Google Drive en esta entrega. No se ha subido nada a esos servicios. La entrega en GitHub se registra en `docs/GITHUB.md`.
 
 Antes de lanzar 1.0.0: completar pendientes, probar dispositivos/OEM, pasar lint/test y revisar política de permisos de Google Play, aviso de privacidad, accesibilidad, marca y seguridad. Conservar artefactos en CI y copiar código/documentación a Drive solo mediante una conexión autorizada. Las claves requieren el respaldo cifrado separado entregado, no el ZIP de fuentes. Los jobs debug requieren las variables ANDROID_EVALUATION_* de una identidad existente; sin ellas fallan deliberadamente, no generan otra clave.
 
@@ -74,7 +84,7 @@ git remote add gitlab <URL_DEL_REPOSITORIO_AUTORIZADO>
 git push gitlab main
 ```
 
-No se ha creado ni publicado un repositorio remoto. El nombre `main` no implica que esta alfa sea apta para producción.
+El repositorio de destino en GitHub es `Spaceapk/iPhone-Dialer`. El nombre `main` no implica que esta alfa sea apta para producción. Ver `docs/GITHUB.md`.
 
 ## Cambios solicitados en alpha02
 - Notificaciones salientes/en curso ordinarias con acción real Finalizar: se retira CallStyle de esa ruta porque el servicio está enlazado, no en primer plano.
