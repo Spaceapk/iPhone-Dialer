@@ -1,17 +1,7 @@
-# Entrega autorizada · 1.0.0-alpha02
+# Entrega · 1.0.0-alpha03
 
-## Artefactos
-- APK Android instalable, variante release optimizada R8, firmada con la identidad permanente nueva autorizada.
-- AAB firmado, para distribución posterior: no se instala directamente y no implica aprobación de ninguna tienda.
-- Código fuente editable Kotlin/Compose, documentación, XML de pruebas, Lint, renderizados y Git bundle recuperable.
-- Respaldo privado 7z/AES-256 y recuperación confidencial entregados por separado, fuera del código. Extracción y apertura del almacén restaurado comprobadas. Custodia final pendiente de descarga por el usuario; no hay respaldo externo automático.
-- Identificador de esta línea: com.pablormlopez.iphonedialer; versionName 1.0.0-alpha02; versionCode 2. No es 1.0.0 estable ni cumplimiento completo del prompt maestro.
+Incluye APK instalable release, AAB firmado y ZIP con código, documentación, informe de 37 pruebas JVM y repositorio Git recuperable. Misma firma y applicationId de alpha02, versionCode 3: instalar encima sin desinstalar para conservar preferencias. No es versión 1.0.0 estable.
 
-## Transición
-La primera alfa tenía otro paquete .debug y otra firma no disponible. La nueva instalación tiene identidad permanente autorizada y puede coexistir, pero no actualiza automáticamente sus preferencias. Ver INSTALLATION.md para evitar confundir las dos.
+Cambio: fotografía local del contacto como fondo completo de llamada, suavizada, sombreada y separada de controles nítidos. No Liquid Glass, no permisos nuevos ni cambios en las acciones de telefonía. Fondo negro con avatar si no hay foto o falla lectura. No se incorporó la foto personal de referencia al APK ni al código.
 
-## Validación
-Compilación release y 30 pruebas JVM satisfactorias, firmas APK/AAB verificadas y certificados coincidentes. Release Lint sin errores fatales; advertencias en TEST_REPORT. No hay dispositivo conectado y no se probó el binario optimizado en el HOT 40i, por lo que no se garantiza resuelto el cierre. Ver TEST_REPORT, ALPHA02_FIX y LIMITATIONS.
-
-## Actualizaciones
-Reutilizar la MISMA clave y paquete; incrementar versionCode. Ver SIGNING.md. No se publicaron repositorios remotos ni se configuraron cuentas Codemagic/GitLab/Drive. Los archivos CI son configuración pendiente, no pipelines remotos verificados.
+Firmas y versión verificadas; pruebas de llamadas físicas en HOT 40i pendientes. Ver TEST_REPORT y LIMITATIONS. Conservar los archivos confidenciales de firma entregados para alpha02: no se creó otra clave y no se regeneró el respaldo. No hay publicación remota GitLab/Codemagic/Drive ni respaldo externo automático.

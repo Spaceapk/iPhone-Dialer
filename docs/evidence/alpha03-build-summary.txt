@@ -1,0 +1,1 @@
+BUILD SUCCESSFUL; 37 JVM tests, 0 failures. Release lint: {'Warning': 18}. APK/AAB signed, verified, same certificate as alpha02. No device call validation.

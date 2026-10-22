@@ -17,6 +17,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.*
@@ -43,20 +45,22 @@ import javax.inject.Inject
     Surface(color=MaterialTheme.colorScheme.background,modifier=Modifier.fillMaxSize()) {
         if(selected==null) Column(Modifier.fillMaxSize().safeDrawingPadding().padding(24.dp),verticalArrangement=Arrangement.Center,horizontalAlignment=Alignment.CenterHorizontally) { Text("No hay llamadas activas",style=MaterialTheme.typography.headlineMedium);TextButton(onClick=onClose) { Text("Cerrar") } }
         else {
-            val call=selected;val contact by produceState<Contact?>(null,call.address) { value=withContext(Dispatchers.IO) { runCatching { if(call.address.isBlank() || call.address=="Número privado") null else context.contentResolver.query(Uri.withAppendedPath(CC.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(call.address)),arrayOf(CC.PhoneLookup._ID,CC.PhoneLookup.LOOKUP_KEY,CC.PhoneLookup.DISPLAY_NAME,CC.PhoneLookup.PHOTO_URI),null,null,null)?.use { c -> if(c.moveToFirst()) Contact(c.getLong(0),c.getString(1).orEmpty(),c.getString(2).orEmpty(),listOf(call.address),false,c.getString(3)) else null } }.getOrNull() } }
+            val call=selected;val contact by key(call.address) { produceState<Contact?>(null,call.address) { value=withContext(Dispatchers.IO) { runCatching { if(call.address.isBlank() || call.address=="Número privado") null else context.contentResolver.query(Uri.withAppendedPath(CC.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(call.address)),arrayOf(CC.PhoneLookup._ID,CC.PhoneLookup.LOOKUP_KEY,CC.PhoneLookup.DISPLAY_NAME,CC.PhoneLookup.PHOTO_URI),null,null,null)?.use { c -> if(c.moveToFirst()) Contact(c.getLong(0),c.getString(1).orEmpty(),c.getString(2).orEmpty(),listOf(call.address),false,c.getString(3)) else null } }.getOrNull() } } }
+            val backgroundPhoto=rememberCallPhoto(contact?.photo)
             var now by remember { mutableLongStateOf(System.currentTimeMillis()) };LaunchedEffect(call.connectedAt) { while(true) { now=System.currentTimeMillis();delay(1000) } }
+            CallPhotoBackdrop(backgroundPhoto) {
             Column(Modifier.fillMaxSize().safeDrawingPadding().verticalScroll(rememberScrollState()).padding(24.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(24.dp)) {
-                Text("iPhone Dialer",style=MaterialTheme.typography.labelLarge,color=MaterialTheme.colorScheme.onSurfaceVariant)
-                Avatar(contact,contact?.name ?: call.name,104)
-                Text(contact?.name ?: call.name,style=MaterialTheme.typography.headlineLarge)
-                if(call.address.isNotBlank() && (contact!=null || call.name!=call.address)) Text(call.address,style=MaterialTheme.typography.titleMedium,color=MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("iPhone Dialer",style=MaterialTheme.typography.labelLarge,color=Color.White.copy(alpha=.90f))
+                if(backgroundPhoto==null) Avatar(contact,contact?.name ?: call.name,104) else Spacer(Modifier.height(104.dp))
+                Text(contact?.name ?: call.name,style=MaterialTheme.typography.headlineLarge,textAlign=TextAlign.Center,color=Color.White)
+                if(call.address.isNotBlank() && (contact!=null || call.name!=call.address)) Text(call.address,style=MaterialTheme.typography.titleMedium,color=Color.White.copy(alpha=.90f))
                 Text(when(call.state) { Call.STATE_RINGING -> "Llamada entrante";Call.STATE_DIALING,Call.STATE_CONNECTING,Call.STATE_SELECT_PHONE_ACCOUNT -> "Conectando…";Call.STATE_ACTIVE -> if(call.connectedAt>0) Search.duration((now-call.connectedAt)/1000) else "En llamada";Call.STATE_HOLDING -> "En espera";Call.STATE_DISCONNECTING -> "Finalizando…";Call.STATE_DISCONNECTED -> "Llamada finalizada";else -> "Actualizando estado…" },style=MaterialTheme.typography.titleLarge)
                 if(state.calls.size>1) state.calls.filter { it.id!=call.id }.forEach { other -> TextButton(onClick={selectedId=other.id}) { Text("${other.name} · ${if(other.state==Call.STATE_HOLDING) "En espera" else "Otra llamada"}") } }
                 state.error?.let { error -> Text(error,color=MaterialTheme.colorScheme.error);TextButton(onClick=store::clearError) { Text("Entendido") } }
                 if(call.state==Call.STATE_RINGING) {
                     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) {
-                        Button(onClick={store.reject(call.id)},colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.colorScheme.error),modifier=Modifier.heightIn(min=64.dp)) { Icon(Icons.Default.CallEnd,null);Spacer(Modifier.width(8.dp));Text("Rechazar") }
-                        Button(onClick={store.answer(call.id)},modifier=Modifier.heightIn(min=64.dp)) { Icon(Icons.Default.Call,null);Spacer(Modifier.width(8.dp));Text("Contestar") }
+                        Button(onClick={store.reject(call.id)},colors=ButtonDefaults.buttonColors(containerColor=Color(0xFFC5221F),contentColor=Color.White),modifier=Modifier.heightIn(min=64.dp)) { Icon(Icons.Default.CallEnd,null);Spacer(Modifier.width(8.dp));Text("Rechazar") }
+                        Button(onClick={store.answer(call.id)},colors=ButtonDefaults.buttonColors(containerColor=Color(0xFF16803C),contentColor=Color.White),modifier=Modifier.heightIn(min=64.dp)) { Icon(Icons.Default.Call,null);Spacer(Modifier.width(8.dp));Text("Contestar") }
                     }
                 } else {
                     val active=call.state==Call.STATE_ACTIVE
@@ -64,8 +68,9 @@ import javax.inject.Inject
                     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) { Control(Icons.Default.Pause,if(call.state==Call.STATE_HOLDING) "Reanudar" else "Espera",enabled=call.canHold || call.state==Call.STATE_HOLDING,onClick={store.hold(call.id)});Control(Icons.Default.CallMerge,"Fusionar",enabled=call.canMerge,onClick={store.merge(call.id)});Control(Icons.Default.Add,"Añadir",enabled=state.canAdd,onClick={context.startActivity(Intent(context,MainActivity::class.java).setAction(Intent.ACTION_DIAL).setData(Uri.fromParts("tel","",null)))}) }
                     if(call.canSwap) TextButton(onClick={store.swap(call.id)}) { Text("Alternar conferencia") }
                     if(showDialpad && active) DtmfPad(store,call.id)
-                    Button(onClick={store.end(call.id)},shape=CircleShape,colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.colorScheme.error),modifier=Modifier.size(76.dp),contentPadding=PaddingValues(0.dp)) { Icon(Icons.Default.CallEnd,"Finalizar llamada",modifier=Modifier.size(32.dp)) }
+                    Button(onClick={store.end(call.id)},shape=CircleShape,colors=ButtonDefaults.buttonColors(containerColor=Color(0xFFC5221F),contentColor=Color.White),modifier=Modifier.size(76.dp),contentPadding=PaddingValues(0.dp)) { Icon(Icons.Default.CallEnd,"Finalizar llamada",modifier=Modifier.size(32.dp)) }
                 }
+            }
             }
         }
     }

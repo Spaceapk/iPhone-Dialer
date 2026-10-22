@@ -14,3 +14,6 @@ Antes de publicación: el titular debe añadir identidad legal, canal de contact
 
 ## Diagnóstico local en alpha02
 Puede guardarse un último informe de error en el almacenamiento privado de la aplicación. Contiene versión, API, fabricante/modelo, categoría técnica constante y clases/métodos/líneas de la excepción; se omiten sus mensajes y los números/nombres de llamadas. Es acotado y sustituye al informe anterior. No se envía automáticamente. El usuario puede compartirlo mediante el selector de Android o borrarlo desde Configuración. No es una garantía de detectar cierres del sistema, ANR o fallos nativos.
+
+## Fondo fotográfico alpha03
+Lectura local de la foto desde el mismo proveedor autorizado de contactos. No requiere permisos nuevos, acceso a fotos de la galería ni Internet. Decodificación y filtro temporales en memoria, sin archivo persistente ni envío. La captura enviada para explicar el cambio no se incluye en la aplicación ni en el repositorio.

@@ -1,4 +1,1 @@
-# QA visual alpha02
-Ambas imágenes se inspeccionaron individualmente. Renderizados de pruebas Robolectric API33, 393×852dp, con KeypadScreen real y contenedor de pruebas. No son capturas del teléfono del usuario.
-
-Aprobado en este tamaño: todos los dígitos y cinco pestañas visibles, sin superposición, temas sólidos claro/oscuro, llamada deshabilitada para número vacío. Pendiente: otras resoluciones, texto grande, navegación por gestos, llamada real y TalkBack en hardware. Ver TEST_REPORT.md.
+Tres capturas nativas Robolectric API33 de InCallScreen real revisadas individualmente: activa con foto (pass: nombre, dos filas de controles y finalizar legibles), entrante (pass: responder/rechazar separados y visibles), sin foto (pass: avatar y fondo negro). No hay solapamiento a393×852dp. Referencia personal solo privada, no incluida. No son capturas de llamadas reales ni aprobación en HOT40i. Ver TEST_REPORT para alcance y pendientes.

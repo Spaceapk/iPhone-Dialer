@@ -253,6 +253,22 @@
         priority="6"
         summary="Use KTX extension function"
         explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        val uri=Uri.parse(photo)"
+        errorLine2="                ~~~~~~~~~~~~~~~~">
+        <location
+            file="/data/iphone-dialer/app/src/main/java/com/pablormlopez/iphonedialer/ui/CallPhotoBackdrop.kt"
+            line="31"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `String.toUri` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
         errorLine1="    if(settings) SettingsSheet(vm,prefs,roleHeld,{settings=false},onPermission={p,reason -> request(p,reason) { revision++ } },onExport={if(vm.has(Manifest.permission.READ_CONTACTS)) exportLauncher.launch(&quot;contactos.vcf&quot;) else request(Manifest.permission.READ_CONTACTS,&quot;Lee tu agenda para exportarla al archivo que elijas.&quot;) { vm.refresh() }},onImport={importLauncher.launch(arrayOf(&quot;text/x-vcard&quot;,&quot;text/vcard&quot;,&quot;application/octet-stream&quot;))},onFullscreen={if(Build.VERSION.SDK_INT>=34) safeIntent(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,Uri.parse(&quot;package:${context.packageName}&quot;)))},onConfirm={text,act -> confirm=text to act})"
         errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location

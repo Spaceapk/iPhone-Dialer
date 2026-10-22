@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -49,7 +50,7 @@ import kotlinx.coroutines.withContext
 }
 @Composable fun Control(icon: ImageVector, label: String, enabled: Boolean=true, selected: Boolean=false, onClick: ()->Unit) {
     Column(horizontalAlignment=Alignment.CenterHorizontally,modifier=Modifier.widthIn(min=88.dp)) {
-        FilledTonalIconButton(onClick=onClick,enabled=enabled,modifier=Modifier.size(64.dp),colors=IconButtonDefaults.filledTonalIconButtonColors(containerColor=if(selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,contentColor=if(selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant)) { Icon(icon,contentDescription=label,modifier=Modifier.size(28.dp)) }
-        Spacer(Modifier.height(8.dp));Text(label,style=MaterialTheme.typography.bodyMedium)
+        FilledTonalIconButton(onClick=onClick,enabled=enabled,modifier=Modifier.size(64.dp),colors=IconButtonDefaults.filledTonalIconButtonColors(containerColor=if(selected) Color.White else Color(0xFF29292B),contentColor=if(selected) Color.Black else Color.White,disabledContainerColor=Color(0xFF29292B),disabledContentColor=Color(0xFF9D9DA3))) { Icon(icon,contentDescription=label,modifier=Modifier.size(28.dp)) }
+        Spacer(Modifier.height(8.dp));Text(label,style=MaterialTheme.typography.bodyMedium,color=Color.White)
     }
 }

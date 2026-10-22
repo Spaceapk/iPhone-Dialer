@@ -27,3 +27,6 @@ Interfaz clásica con superficies sólidas blancas/grises, acento azul predeterm
 - https://support.google.com/googleplay/android-developer/answer/16558241
 
 El comportamiento de Android y políticas de tiendas cambian; revisar las referencias al publicar. No confundir los ejemplos de llamadas VoIP autogestionadas/ConnectionService con un reemplazo de la interfaz del marcador de SIM.
+
+## Fondo de llamada alpha03
+CallPhotoBackdrop separa imagen y contenido. rememberCallPhoto está ligado al URI de contacto; cambios de número reinician la consulta para no retener la foto anterior. CallPhotoProcessor decodifica URI content local con muestreo hasta 960px y aplica dos pasadas separables fuera del hilo principal. Los controles nunca reciben desenfoque: tienen fondos sólidos y contraste independiente. Sin foto o si falla la lectura, fondo negro y avatar. No se añaden permisos, archivos fotográficos persistentes ni cambios a CallStore/Telecom.

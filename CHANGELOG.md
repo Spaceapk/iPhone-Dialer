@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0-alpha03 (alfa, fondo fotográfico)
+- Foto local del contacto a pantalla completa en llamada entrante y en curso.
+- Desenfoque suave de la imagen fuera del hilo principal, límite de 960 px y capa oscura de contraste.
+- Controles nítidos, superficies sólidas y botón de finalizar rojo. Sin Liquid Glass.
+- Fondo negro/avatares existentes si falta foto, permiso o decodificación.
+- Misma identidad de firma y paquete de alpha02; versionCode 3.
+- Sin cambios en las acciones Telecom, historial, agenda ni solicitudes de permisos.
+
+
 ## 1.0.0-alpha02 (alfa firmada, pendiente validación física)
 - Corrige la construcción inválida de notificaciones CallStyle salientes en Android 12/13.
 - Controla rechazos de notificación y añade informe técnico local sin datos de llamadas.

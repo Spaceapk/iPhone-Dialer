@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pablormlopez.iphonedialer.CallNotificationRegressionTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-21T23:15:56" hostname="ac1605c1-3e9" time="2.004">
+  <properties/>
+  <testcase name="outgoingUsesOrdinaryNotificationAndRealHangupAction" classname="com.pablormlopez.iphonedialer.CallNotificationRegressionTest" time="1.768"/>
+  <testcase name="incomingFullScreenCallStyleMeetsContract" classname="com.pablormlopez.iphonedialer.CallNotificationRegressionTest" time="0.11"/>
+  <testcase name="activeTransitionNeverAddsInvalidCallStyle" classname="com.pablormlopez.iphonedialer.CallNotificationRegressionTest" time="0.04"/>
+  <testcase name="deniedFullScreenFallsBackToOrdinaryAnswerRejectActions" classname="com.pablormlopez.iphonedialer.CallNotificationRegressionTest" time="0.035"/>
+  <testcase name="originalOngoingConstructionViolatesPlatformContract" classname="com.pablormlopez.iphonedialer.CallNotificationRegressionTest" time="0.048"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.pablormlopez.iphonedialer.ClassicUiTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-21T23:15:48" hostname="ac1605c1-3e9" time="8.27">
+<testsuite name="com.pablormlopez.iphonedialer.ClassicUiTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-22T01:58:34" hostname="a54dea0a-98d" time="0.646">
   <properties/>
-  <testcase name="lightClassicKeypadRenders" classname="com.pablormlopez.iphonedialer.ClassicUiTest" time="7.588"/>
-  <testcase name="darkClassicKeypadRenders" classname="com.pablormlopez.iphonedialer.ClassicUiTest" time="0.335"/>
-  <testcase name="keypadStillRequestsEnteredNumber" classname="com.pablormlopez.iphonedialer.ClassicUiTest" time="0.347"/>
+  <testcase name="lightClassicKeypadRenders" classname="com.pablormlopez.iphonedialer.ClassicUiTest" time="0.313"/>
+  <testcase name="darkClassicKeypadRenders" classname="com.pablormlopez.iphonedialer.ClassicUiTest" time="0.158"/>
+  <testcase name="keypadStillRequestsEnteredNumber" classname="com.pablormlopez.iphonedialer.ClassicUiTest" time="0.175"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

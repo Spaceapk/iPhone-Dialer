@@ -1,11 +1,11 @@
 # iPhone Dialer · Android
 
-**Estado: alpha02, corrección candidata y rediseño clásico; no validada en el HOT 40i y con APK release firmada tras autorización. Sigue pendiente validar llamadas en el teléfono.** Aplicación Kotlin/Compose nativa: no WebView, datos ficticios ni simulación de llamadas. Las acciones de llamada utilizan Android Telecom y los contactos/historial provienen de los proveedores del dispositivo. Que una ruta esté implementada no significa que se haya validado en hardware real.
+**Estado: alpha03, alfa con fotografía de contacto como fondo de llamada.** Interfaz nativa Kotlin/Compose; no WebView ni simulación de llamadas. Desenfoque solo en la imagen, nunca en los controles; no Liquid Glass. Pendiente validar en el HOT 40i Android 13. Que una ruta compile o tenga pruebas JVM no significa que esté validada en hardware real.
 
 ## Identidad
 - Identificador de esta nueva instalación: `com.pablormlopez.iphonedialer`.
 - Alfa anterior/debug: `com.pablormlopez.iphonedialer.debug`; es otra instalación.
-- Versión entregada: `1.0.0-alpha02`, versionCode 2, variante release (no equivale a versión estable).
+- Versión entregada: `1.0.0-alpha03`, versionCode 3, variante release (no equivale a versión estable).
 - Android 10/API 29 o posterior, compile/target SDK 36, Java 17.
 - Recursos originales; no afiliada a Apple. Revisar el nombre comercial y las marcas antes de distribuir.
 
@@ -42,7 +42,7 @@ La compilación JVM y Lint no requieren una firma. Empaquetar una APK debug qued
 Producción sigue usando las variables `ANDROID_KEYSTORE_*` del apartado de firma. La identidad permanente ya se creó con autorización y se entrega respaldo cifrado separado. Ver `docs/SIGNING.md`; custodiar los archivos antes de futuras actualizaciones.
 
 ## Estado de instalación y seguridad
-Se entrega una APK alpha02 release firmada, verificada y optimizada. Es una instalación nueva, no actualización sobre alpha01.debug. Ver `docs/INSTALLATION.md`. No reutilizar ni renombrar la APK alpha01 como si contuviera esta corrección.
+Se entrega una APK alpha03 release firmada, verificada y optimizada. Actualiza alpha02 sin desinstalar, con la MISMA firma y paquete. No actualiza alpha01.debug. Ver `docs/INSTALLATION.md`. No reutilizar ni renombrar la APK alpha01 como si contuviera esta corrección.
 
 Si la alpha01 se cierra al llamar, vuelve temporalmente al marcador original desde Ajustes de Android → Aplicaciones predeterminadas → Teléfono (los nombres pueden variar según el fabricante). No dependas de la alfa para llamadas importantes ni pruebes números de emergencia.
 
@@ -84,3 +84,8 @@ No se ha creado ni publicado un repositorio remoto. El nombre `main` no implica 
 - Pruebas nuevas de contrato de notificación Android 13 con Robolectric y renderizado Compose. No equivalen a probar una llamada real en el HOT 40i.
 
 Ver `docs/ALPHA02_FIX.md` y el informe actual. Las evidencias de alpha01 quedaron archivadas en `docs/history/alpha01/`; no son resultados de alpha02.
+
+## Cambio alpha03: fotografía en llamada
+La foto se obtiene del proveedor de contactos autorizado, no de la captura de ejemplo enviada por el usuario. Se decodifica con tamaño acotado y se suaviza fuera del hilo principal mediante un filtro compatible desde Android 10. Se muestra recortada para llenar la pantalla, con capa oscura gradual. No se guardan copias persistentes ni se envía la imagen. El nombre, duración y botones quedan en una capa independiente nítida, y los controles tienen fondos sólidos. Si falta la foto o su lectura falla, se conserva la pantalla negra con avatar.
+
+La captura personal del usuario se utilizó únicamente como referencia privada de revisión y no se incorporó al APK ni al ZIP de fuentes. Calidad final depende de la resolución y encuadre de la foto de la agenda.

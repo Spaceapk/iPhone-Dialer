@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pablormlopez.iphonedialer.CallPhotoTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-22T01:58:24" hostname="a54dea0a-98d" time="3.636">
+  <properties/>
+  <testcase name="unsupportedUriFallsBackWithoutNetworkAccess" classname="com.pablormlopez.iphonedialer.CallPhotoTest" time="3.353"/>
+  <testcase name="uniformPhotoKeepsItsColorAndOriginalIsNotModified" classname="com.pablormlopez.iphonedialer.CallPhotoTest" time="0.133"/>
+  <testcase name="decodingIsBoundedForLargePhotos" classname="com.pablormlopez.iphonedialer.CallPhotoTest" time="0.087"/>
+  <testcase name="edgesAreSoftenedWithoutChangingDimensions" classname="com.pablormlopez.iphonedialer.CallPhotoTest" time="0.063"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[java.lang.UnsupportedOperationException: You must use ShadowContentResolver.registerInputStream() in order to call read()
+	at org.robolectric.shadows.ShadowContentResolver$UnregisteredInputStream.read(ShadowContentResolver.java:1154)
+	at org.robolectric.nativeruntime.BitmapFactoryNatives.nativeDecodeStream(Native Method)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory.nativeDecodeStream(ShadowNativeBitmapFactory.java:73)
+	at android.graphics.BitmapFactory.nativeDecodeStream(BitmapFactory.java)
+	at android.graphics.BitmapFactory.$$robo$$android_graphics_BitmapFactory$decodeStreamInternal(BitmapFactory.java:790)
+	at android.graphics.BitmapFactory.decodeStreamInternal(BitmapFactory.java)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory$BitmapFactoryReflector$$Reflector16.decodeStreamInternal(Unknown Source)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory.decodeStream(ShadowNativeBitmapFactory.java:60)
+	at android.graphics.BitmapFactory.decodeStream(BitmapFactory.java)
+	at com.pablormlopez.iphonedialer.ui.CallPhotoProcessor.load(CallPhotoBackdrop.kt:34)
+	at com.pablormlopez.iphonedialer.CallPhotoTest.unsupportedUriFallsBackWithoutNetworkAccess(CallPhotoTest.kt:41)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+]]></system-err>
+</testsuite>

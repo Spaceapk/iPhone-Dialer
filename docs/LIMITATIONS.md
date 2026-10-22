@@ -32,3 +32,6 @@ La inspección visual manual completa de la compilación final no pudo completar
 
 ## Alpha02 y HOT 40i Android 13
 La causa exacta del cierre del dispositivo no está confirmada con un registro de ese teléfono. Se corrigió un defecto verificable del constructor de notificaciones salientes frente al contrato de Android 13. La corrección requiere validación física antes de declararla resuelta. La firma de alpha01 no está disponible. Alpha02 se entrega como instalación nueva release, con otra identidad permanente autorizada; no es actualización compatible con alpha01.debug. El dispositivo físico sigue sin validar.
+
+## Alpha03: fondo fotográfico
+Foto recortada a pantalla completa: el encuadre puede omitir bordes según relación de aspecto. Las fotos pequeñas pueden verse suaves; no se inventan detalles ni se accede a fotos ajenas a la agenda. El filtro se aplica a una imagen local acotada, no al vídeo ni al contenido situado detrás de los botones. Falta validar memoria, carga, rotación, permisos revocados y pantalla bloqueada en el HOT 40i. Los resultados de alpha02 se conservan en history/alpha02; no se presentan como nuevas llamadas probadas.
