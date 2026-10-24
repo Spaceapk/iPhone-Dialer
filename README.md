@@ -1,5 +1,7 @@
 # iPhone Dialer · Android
 
+> Desarrollo alpha04: [cambios, auditoría y verificaciones pendientes](docs/ALPHA04.md). La descarga publicada de abajo sigue siendo alpha03; no es un APK alpha04.
+
 ## Descargar la aplicación
 
 - **[Descargar APK alpha03 para Android](https://github.com/Spaceapk/iPhone-Dialer/releases/download/v1.0.0-alpha03/iPhoneDialer-FotoContacto-alpha03.apk)**

@@ -55,6 +55,19 @@ class ClassicUiTest {
     }
     @Test fun lightClassicKeypadRenders() { compose.setContent { Screen("light") };compose.onNodeWithContentDescription("Llamar").assertIsDisplayed().assertIsNotEnabled();capture("classic-light.png") }
     @Test fun darkClassicKeypadRenders() { compose.setContent { Screen("dark") };compose.onNodeWithContentDescription("Llamar").assertIsDisplayed();capture("classic-dark.png") }
+    @Test fun keypadOffersSaveAndCopyWithoutChangingNumber() {
+        var saved="";var copied="";var current="12345"
+        compose.setContent { DialerTheme(Preferences()) { KeypadScreen(current,{current=it},Preferences(),emptyList(),emptyList(),{},{},onSave={saved=it},onCopy={copied=it}) } }
+        compose.onNodeWithText("Guardar número").performClick()
+        compose.onNodeWithContentDescription("Copiar número").performClick()
+        compose.runOnIdle { assertEquals("12345",saved);assertEquals("12345",copied);assertEquals("12345",current) }
+    }
+    @Test fun keypadLongDeleteClearsNumber() {
+        var current="12345"
+        compose.setContent { DialerTheme(Preferences()) { KeypadScreen(current,{current=it},Preferences(),emptyList(),emptyList(),{},{}) } }
+        compose.onNodeWithContentDescription("Borrar dígito").performTouchInput { longClick() }
+        compose.runOnIdle { assertEquals("",current) }
+    }
     @Test fun keypadStillRequestsEnteredNumber() {
         var dialed=""
         compose.setContent { var number by remember { mutableStateOf("") };DialerTheme(Preferences()) { KeypadScreen(number,{number=it},Preferences(),emptyList(),emptyList(),{dialed=it},{}) } }

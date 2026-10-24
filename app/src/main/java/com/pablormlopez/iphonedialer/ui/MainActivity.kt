@@ -31,7 +31,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
@@ -63,11 +62,18 @@ private data class PermissionPrompt(val permission: String,val reason: String,va
     var permissionPrompt by remember { mutableStateOf<PermissionPrompt?>(null) };var permissionAction by remember { mutableStateOf<()->Unit>({}) }
     var confirm by remember { mutableStateOf<Pair<String,()->Unit>?>(null) };var accounts by remember { mutableStateOf<List<SimAccount>>(emptyList()) };var simForNumber by remember { mutableStateOf<String?>(null) }
     var showSimChooser by remember { mutableStateOf(false) }
+    var saveNumber by rememberSaveable { mutableStateOf<String?>(null) }
     val message by vm.message.collectAsStateWithLifecycle();val snackbar=remember { SnackbarHostState() }
     val permissionLauncher=rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted -> revision++;vm.refresh();if(granted) permissionAction() else vm.message.value="Permiso denegado. Puedes seguir usando las demás funciones.";permissionAction={} }
     fun request(p: String,reason: String,action: ()->Unit) { if(vm.has(p)) action() else permissionPrompt=PermissionPrompt(p,reason,action) }
     val roleLauncher=rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { roleHeld=vm.phone.isDefault();revision++;vm.refresh() }
     fun requestRole() { val rm=context.getSystemService(RoleManager::class.java);if(rm.isRoleAvailable(RoleManager.ROLE_DIALER)) roleLauncher.launch(rm.createRequestRoleIntent(RoleManager.ROLE_DIALER)) else vm.message.value="Este dispositivo no ofrece el rol de teléfono." }
+    val contactEditor=rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { vm.refresh() }
+    fun editNumber(n: String, existing: Boolean) {
+        val intent=if(existing) Intent(Intent.ACTION_INSERT_OR_EDIT).setType(CC.Contacts.CONTENT_ITEM_TYPE) else Intent(Intent.ACTION_INSERT,CC.Contacts.CONTENT_URI)
+        try { contactEditor.launch(intent.putExtra(CC.Intents.Insert.PHONE,n).putExtra("finishActivityOnSaveCompleted",true)) } catch(e: RuntimeException) { vm.message.value="No hay un editor de contactos disponible." }
+    }
+    fun copyNumber(n: String) { context.getSystemService(android.content.ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("Número",n));vm.message.value="Número copiado." }
     fun safeIntent(intent: Intent) { try { context.startActivity(intent) } catch(e: RuntimeException) { vm.message.value="No hay una aplicación del sistema disponible para esta acción." } }
     fun call(n: String) {
         if(!roleHeld) { vm.message.value="Elige iPhone Dialer como teléfono predeterminado y vuelve a tocar Llamar.";requestRole();return }
@@ -78,9 +84,9 @@ private data class PermissionPrompt(val permission: String,val reason: String,va
         }
     }
     fun callContact(c: Contact) { when(c.phones.size) { 0 -> { selected=c };1 -> call(c.phones.first());else -> chooseNumber=c } }
-    val exportLauncher=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/x-vcard")) { uri -> if(uri!=null) vm.work { vm.system.exportVcf(uri,contacts);vm.message.value="Contactos exportados al archivo elegido." } }
+    val exportLauncher=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/x-vcard")) { uri -> if(uri!=null) vm.work { vm.system.exportVcf(uri,vm.system.contacts());vm.message.value="Contactos exportados al archivo elegido." } }
     val importLauncher=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> if(uri!=null) safeIntent(Intent(Intent.ACTION_VIEW).setDataAndType(uri,"text/x-vcard").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)) }
-    DisposableEffect(lifecycle) { val observer=LifecycleEventObserver { _,event -> if(event==Lifecycle.Event.ON_RESUME) { roleHeld=vm.phone.isDefault();revision++;vm.refresh() } };lifecycle.addObserver(observer);onDispose { lifecycle.removeObserver(observer) } }
+    DisposableEffect(lifecycle) { val observer=LifecycleEventObserver { _,event -> if(event==Lifecycle.Event.ON_RESUME) { roleHeld=vm.phone.isDefault();if(!vm.has(Manifest.permission.READ_CONTACTS)) { selected=null;chooseNumber=null };revision++;vm.refresh() } };lifecycle.addObserver(observer);onDispose { lifecycle.removeObserver(observer) } }
     LaunchedEffect(Unit) { val initial=vm.preferences.flow.first();if(tab<0) tab=initial.start }
     LaunchedEffect(externalNumber) { if(externalNumber!=null) { number=externalNumber;tab=3;consumed() } }
     LaunchedEffect(message) { message?.let { snackbar.showSnackbar(it);vm.message.value=null } }
@@ -119,8 +125,8 @@ private data class PermissionPrompt(val permission: String,val reason: String,va
                                 }
                             }
                         }
-                        1 -> if(!roleHeld) EmptyPanel("Historial protegido","Activa primero el rol de teléfono predeterminado.") else if(!vm.has(Manifest.permission.READ_CALL_LOG)) EmptyPanel("Tu historial, solo aquí","Se necesita permiso para consultar las llamadas registradas por Android.","Ver historial") { request(Manifest.permission.READ_CALL_LOG,"Permite mostrar el historial local de llamadas. No se envía fuera del dispositivo.") { vm.refresh() } } else RecentScreen(recents,query,{query=it},::call,{ n ->safeIntent(Intent(Intent.ACTION_INSERT,CC.Contacts.CONTENT_URI).putExtra(CC.Intents.Insert.PHONE,n)) }) { ids -> confirm="¿Eliminar ${ids.size} registros? Esta acción modifica el historial del sistema." to { request(Manifest.permission.WRITE_CALL_LOG,"Permite eliminar únicamente los registros que acabas de seleccionar.") { vm.work { vm.system.deleteRecents(ids);vm.refresh() } } } }
-                        3 -> KeypadScreen(number,{number=it},prefs,speeds,contacts,::call,::callContact)
+                        1 -> if(!roleHeld) EmptyPanel("Historial protegido","Activa primero el rol de teléfono predeterminado.") else if(!vm.has(Manifest.permission.READ_CALL_LOG)) EmptyPanel("Tu historial, solo aquí","Se necesita permiso para consultar las llamadas registradas por Android.","Ver historial") { request(Manifest.permission.READ_CALL_LOG,"Permite mostrar el historial local de llamadas. No se envía fuera del dispositivo.") { vm.refresh() } } else RecentScreen(recents,query,{query=it},::call,{ n ->saveNumber=n }) { ids -> confirm="¿Eliminar ${ids.size} registros? Esta acción modifica el historial del sistema." to { request(Manifest.permission.WRITE_CALL_LOG,"Permite eliminar únicamente los registros que acabas de seleccionar.") { vm.work { vm.system.deleteRecents(ids);vm.refresh() } } } }
+                        3 -> KeypadScreen(number,{number=it},prefs,speeds,contacts,::call,::callContact,onSave={saveNumber=it},onCopy=::copyNumber)
                         4 -> EmptyPanel("Buzón del operador","Accede al servicio telefónico de tu operador. El buzón visual y las transcripciones no están habilitados: requieren soporte e integración específicos.","Llamar al buzón") {
                             if(!roleHeld) requestRole() else request(Manifest.permission.CALL_PHONE,"Permite llamar al buzón del operador. Pueden aplicarse tarifas del servicio.") { runCatching { vm.phone.voicemail() }.onFailure { vm.message.value="El operador o dispositivo no permite abrir el buzón por este método." } }
                         }
@@ -141,11 +147,17 @@ private data class PermissionPrompt(val permission: String,val reason: String,va
             safeIntent(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/x-vcard").putExtra(Intent.EXTRA_STREAM,uri).apply { clipData=ClipData.newRawUri("Contacto",uri);addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) },"Compartir contacto"))
         },onShortcut={val manager=context.getSystemService(ShortcutManager::class.java);if(manager.isRequestPinShortcutSupported && contact.phones.isNotEmpty()) manager.requestPinShortcut(ShortcutInfo.Builder(context,"contact_${contact.id}").setShortLabel(contact.name.take(30)).setIcon(AndroidIcon.createWithResource(context,R.drawable.ic_launcher)).setIntent(Intent(context,MainActivity::class.java).setAction(Intent.ACTION_DIAL).setData(Uri.fromParts("tel",contact.phones.first(),null))).build(),null) else vm.message.value="Este lanzador no admite el acceso directo." })
     }
-    if(settings) SettingsSheet(vm,prefs,roleHeld,{settings=false},onPermission={p,reason -> request(p,reason) { revision++ } },onExport={if(vm.has(Manifest.permission.READ_CONTACTS)) exportLauncher.launch("contactos.vcf") else request(Manifest.permission.READ_CONTACTS,"Lee tu agenda para exportarla al archivo que elijas.") { vm.refresh() }},onImport={importLauncher.launch(arrayOf("text/x-vcard","text/vcard","application/octet-stream"))},onFullscreen={if(Build.VERSION.SDK_INT>=34) safeIntent(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,Uri.parse("package:${context.packageName}")))},onConfirm={text,act -> confirm=text to act})
+    saveNumber?.let { n -> AlertDialog(onDismissRequest={saveNumber=null},title={Text("Guardar número")},text={Column {
+        if(contacts.any { c -> c.phones.any { Search.digits(n).isNotEmpty() && Search.digits(it)==Search.digits(n) } }) Text("Este número ya aparece en tu agenda. Puedes guardarlo igualmente.")
+        TextButton(onClick={saveNumber=null;editNumber(n,false)}) { Text("Crear contacto nuevo") }
+        TextButton(onClick={saveNumber=null;editNumber(n,true)}) { Text("Añadir a contacto existente") }
+        TextButton(onClick={copyNumber(n);saveNumber=null}) { Text("Copiar número") }
+    }},confirmButton={TextButton(onClick={saveNumber=null}) { Text("Cancelar") }}) }
+    if(settings) SettingsSheet(vm,prefs,roleHeld,{settings=false},onPermission={p,reason -> request(p,reason) { revision++ } },onExport={if(vm.has(Manifest.permission.READ_CONTACTS)) exportLauncher.launch("contactos.vcf") else request(Manifest.permission.READ_CONTACTS,"Lee tu agenda para exportarla al archivo que elijas.") { exportLauncher.launch("contactos.vcf") }},onImport={importLauncher.launch(arrayOf("text/x-vcard","text/vcard","application/octet-stream"))},onFullscreen={if(Build.VERSION.SDK_INT>=34) safeIntent(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,Uri.parse("package:${context.packageName}")))},onConfirm={text,act -> confirm=text to act})
 }
 @OptIn(ExperimentalFoundationApi::class)
-@Composable fun KeypadScreen(number: String,setNumber: (String)->Unit,prefs: Preferences,speeds: List<SpeedDial>,contacts: List<Contact>,onCall: (String)->Unit,onContact: (Contact)->Unit) {
-    val haptics=LocalHapticFeedback.current
+@Composable fun KeypadScreen(number: String,setNumber: (String)->Unit,prefs: Preferences,speeds: List<SpeedDial>,contacts: List<Contact>,onCall: (String)->Unit,onContact: (Contact)->Unit,onSave: (String)->Unit={},onCopy: (String)->Unit={}) {
+    val view=LocalView.current
     val fontScale=LocalDensity.current.fontScale
     val matches=remember(number,contacts) { if(number.isBlank()) emptyList() else contacts.filter { Search.matches(it.name,it.phones,number) }.take(2) }
     BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -155,11 +167,15 @@ private data class PermissionPrompt(val permission: String,val reason: String,va
                 matches.forEach { c -> TextButton(onClick={onContact(c)}) { Text(c.name,maxLines=1) } }
                 Row(Modifier.fillMaxWidth().padding(vertical=12.dp),verticalAlignment=Alignment.CenterVertically) {
                     Text(number.ifBlank { "Introduce un número" },fontSize=when { number.isBlank() -> 20.sp;number.length>14 -> 24.sp;else -> 30.sp },fontWeight=FontWeight.Medium,maxLines=2,modifier=Modifier.weight(1f),color=if(number.isBlank()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface)
-                    IconButton(onClick={setNumber(number.dropLast(1))},enabled=number.isNotEmpty()) { Icon(Icons.AutoMirrored.Filled.Backspace,"Borrar dígito") }
+                    Box(Modifier.size(48.dp).combinedClickable(enabled=number.isNotEmpty(),hapticFeedbackEnabled=false,onClick={setNumber(number.dropLast(1))},onLongClick={setNumber("")}),contentAlignment=Alignment.Center) { Icon(Icons.AutoMirrored.Filled.Backspace,"Borrar dígito") }
+                }
+                if(number.isNotBlank()) Row(verticalAlignment=Alignment.CenterVertically) {
+                    TextButton(onClick={onSave(number)}) { Text("Guardar número") }
+                    IconButton(onClick={onCopy(number)}) { Icon(Icons.Default.ContentCopy,"Copiar número") }
                 }
                 val rows=listOf(listOf("1" to "", "2" to "ABC","3" to "DEF"),listOf("4" to "GHI","5" to "JKL","6" to "MNO"),listOf("7" to "PQRS","8" to "TUV","9" to "WXYZ"),listOf("*" to "","0" to "+","#" to ""))
                 rows.forEach { row -> Row(Modifier.fillMaxWidth().padding(vertical=4.dp),horizontalArrangement=Arrangement.SpaceEvenly) { row.forEach { (digit,letters) ->
-                    Column(Modifier.size(keySize.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surfaceVariant).combinedClickable(onClick={if(number.length<128) setNumber(number+digit);if(prefs.haptics) haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)},onLongClick={if(digit=="0" && number.length<128) setNumber(number+"+") else speeds.firstOrNull { it.slot.toString()==digit }?.let { onCall(it.number) }}),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.Center) {
+                    Column(Modifier.size(keySize.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surfaceVariant).combinedClickable(hapticFeedbackEnabled=false,onClick={if(number.length<128) setNumber(number+digit);if(prefs.haptics) view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)},onLongClick={if(digit=="0" && number.length<128) setNumber(number+"+") else speeds.firstOrNull { it.slot.toString()==digit }?.let { onCall(it.number) }}),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.Center) {
                         Text(digit,fontSize=if(keySize<64f) 28.sp else 32.sp,lineHeight=if(keySize<64f) 30.sp else 34.sp)
                         Text(letters.ifBlank { " " },fontSize=12.sp,lineHeight=14.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,fontWeight=FontWeight.Medium)
                     }
