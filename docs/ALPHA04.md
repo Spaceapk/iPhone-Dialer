@@ -30,3 +30,11 @@ No se ha aportado/verificado la clave original; no se genera ni sustituye. Sin A
 
 ## Instalación futura
 Reutilizar exactamente la clave permanente de alpha03 y verificar su certificado antes de instalar encima, sin desinstalar. No usar claves nuevas. El paquete debug es otra aplicación. No hay instrucciones de instalación de alpha04 hasta disponer de APK firmado y comprobado.
+
+## Corrección alpha05: estabilidad del teclado (versionCode 5)
+Causa raíz del movimiento durante la escritura, en `KeypadScreen`:
+- Las coincidencias de contactos aparecían/desaparecían sobre el número dentro de la misma columna desplazable, desplazando toda la rejilla en cada pulsación. Ahora ocupan un espacio reservado de altura fija (96.dp) mientras hay número marcado.
+- La fila del número cambiaba de altura al saltar a dos líneas o cambiar de fuente. Ahora es de altura constante (52.dp), una sola línea con fuente adaptativa (30/24/20.sp según longitud).
+- El tamaño de tecla se derivaba de la altura de ventana en vivo; cambios transitorios (p. ej. el IME al volver de otra pestaña) redimensionaban las teclas. Ahora se usa la mayor altura observada como referencia estable.
+- El manifiesto no declaraba `windowSoftInputMode`; el sistema podía aplicar `adjustPan` y desplazar toda la ventana. Ahora `MainActivity` usa `adjustResize`: redimensionamiento determinista y animación natural del teclado virtual.
+Sin cambios de diseño visual, sin funciones eliminadas, sin retrasos artificiales, misma identidad de firma permanente. Verificado: pruebas JVM + lintRelease SUCCESS; falta validación física.

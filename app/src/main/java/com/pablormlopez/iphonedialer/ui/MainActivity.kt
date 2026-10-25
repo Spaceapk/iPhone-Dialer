@@ -161,12 +161,19 @@ private data class PermissionPrompt(val permission: String,val reason: String,va
     val fontScale=LocalDensity.current.fontScale
     val matches=remember(number,contacts) { if(number.isBlank()) emptyList() else contacts.filter { Search.matches(it.name,it.phones,number) }.take(2) }
     BoxWithConstraints(Modifier.fillMaxSize()) {
-        val keySize=((maxHeight.value-240f)/4f).coerceIn(if(fontScale>1.15f) 64f else 56f,76f)
+        // Altura de referencia estable: cambios transitorios de la ventana (p. ej. el IME
+        // al volver de otra pestaña) no deben redimensionar ni desplazar las teclas.
+        var stableMaxHeight by remember { mutableFloatStateOf(0f) }
+        if(maxHeight.value>stableMaxHeight) stableMaxHeight=maxHeight.value
+        val layoutHeight=if(stableMaxHeight>0f) stableMaxHeight else maxHeight.value
+        val keySize=((layoutHeight-240f)/4f).coerceIn(if(fontScale>1.15f) 64f else 56f,76f)
         Column(Modifier.fillMaxSize(),horizontalAlignment=Alignment.CenterHorizontally) {
             Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),horizontalAlignment=Alignment.CenterHorizontally) {
-                matches.forEach { c -> TextButton(onClick={onContact(c)}) { Text(c.name,maxLines=1) } }
-                Row(Modifier.fillMaxWidth().padding(vertical=12.dp),verticalAlignment=Alignment.CenterVertically) {
-                    Text(number.ifBlank { "Introduce un número" },fontSize=when { number.isBlank() -> 20.sp;number.length>14 -> 24.sp;else -> 30.sp },fontWeight=FontWeight.Medium,maxLines=2,modifier=Modifier.weight(1f),color=if(number.isBlank()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface)
+                if(number.isNotBlank()) Column(Modifier.height(96.dp),verticalArrangement=Arrangement.Center,horizontalAlignment=Alignment.CenterHorizontally) {
+                    matches.forEach { c -> TextButton(onClick={onContact(c)}) { Text(c.name,maxLines=1) } }
+                }
+                Row(Modifier.fillMaxWidth().padding(vertical=12.dp).height(52.dp),verticalAlignment=Alignment.CenterVertically) {
+                    Text(number.ifBlank { "Introduce un número" },fontSize=when { number.isBlank() -> 20.sp;number.length>20 -> 20.sp;number.length>14 -> 24.sp;else -> 30.sp },fontWeight=FontWeight.Medium,maxLines=1,softWrap=false,overflow=androidx.compose.ui.text.style.TextOverflow.Clip,modifier=Modifier.weight(1f),color=if(number.isBlank()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface)
                     Box(Modifier.size(48.dp).combinedClickable(enabled=number.isNotEmpty(),hapticFeedbackEnabled=false,onClick={setNumber(number.dropLast(1))},onLongClick={setNumber("")}),contentAlignment=Alignment.Center) { Icon(Icons.AutoMirrored.Filled.Backspace,"Borrar dígito") }
                 }
                 if(number.isNotBlank()) Row(verticalAlignment=Alignment.CenterVertically) {
