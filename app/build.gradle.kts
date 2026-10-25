@@ -13,8 +13,8 @@ android {
         applicationId = "com.pablormlopez.iphonedialer"
         minSdk = 29
         targetSdk = 36
-        versionCode = 3
-        versionName = "1.0.0-alpha03"
+        versionCode = 5
+        versionName = "1.0.0-alpha05"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {

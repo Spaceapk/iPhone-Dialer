@@ -26,6 +26,7 @@ import javax.inject.Inject
     init { viewModelScope.launch { system.changes().debounce(250).collect { refresh() } } }
     fun has(permission: String) = ContextCompat.checkSelfPermission(context,permission)==PackageManager.PERMISSION_GRANTED
     fun refresh() {
+        if(!phone.isDefault()) blocked.value=emptyList()
         refreshJob?.cancel();refreshJob=viewModelScope.launch {
             if(has(Manifest.permission.READ_CONTACTS)) runCatching { system.contacts() }.onSuccess { contacts.value=it }.onFailure { if(it is CancellationException) throw it; contacts.value=emptyList();message.value="No se pudo leer la agenda." } else contacts.value=emptyList()
             if(phone.isDefault() && has(Manifest.permission.READ_CALL_LOG)) runCatching { system.recents() }.onSuccess { recents.value=it }.onFailure { if(it is CancellationException) throw it;recents.value=emptyList();message.value="No se pudo leer el historial." } else recents.value=emptyList()
