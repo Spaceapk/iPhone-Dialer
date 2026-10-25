@@ -14,9 +14,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          api-level: 36
+          ndk-version: r27c
       - uses: gradle/actions/setup-gradle@v4
-      - name: Install project SDK
-        run: sdkmanager --list && sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - name: Unit tests, lint and unsigned release
         run: bash gradlew testDebugUnitTest lintRelease assembleRelease --no-daemon
       - uses: actions/upload-artifact@v4
