@@ -14,10 +14,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
         with:
-          api-level: 36
-          ndk-version: r27c
+          packages: 'platform-tools'
+          accept-android-sdk-licenses: true
+          log-accepted-android-sdk-licenses: false
       - uses: gradle/actions/setup-gradle@v4
       - name: Unit tests, lint and unsigned release
         run: bash gradlew testDebugUnitTest lintRelease assembleRelease --no-daemon
